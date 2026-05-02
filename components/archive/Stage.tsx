@@ -2,6 +2,7 @@
 
 import { findProject, type ArchiveProject } from "@/lib/archiveProjects";
 import { SineLayout } from "./layouts/SineLayout";
+import { ChineseLayout } from "./layouts/ChineseLayout";
 
 type StageProps = {
   projectId: string;
@@ -44,6 +45,8 @@ export function Stage({ projectId, onImageClick }: StageProps) {
   switch (project.layout) {
     case "sine":
       return <SineLayout project={project} onImageClick={handle} />;
+    case "chinese":
+      return <ChineseLayout project={project} onImageClick={handle} />;
     default:
       return <PlaceholderLayout project={project} onImageClick={handle} />;
   }
