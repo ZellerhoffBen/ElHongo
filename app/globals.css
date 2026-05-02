@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Styrene A";
+  src: url("/fonts/StyreneA-Regular.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Styrene A";
+  src: url("/fonts/StyreneA-Bold.otf") format("opentype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  background: #ffffff;
+  color: #111111;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  font-family: "Styrene A", Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.nav-mark,
+.nav-link {
+  position: relative;
+  text-decoration: none;
+}
+
+.nav-mark::after,
+.nav-link::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.55em;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition:
+    transform 180ms ease,
+    bottom 180ms ease;
+}
+
+.nav-mark:hover::after,
+.nav-link:hover::after {
+  bottom: -0.35em;
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.nav-link {
+  display: inline-block;
+  transition:
+    letter-spacing 180ms ease,
+    transform 180ms ease;
+}
+
+.nav-link:hover {
+  letter-spacing: 0.24em;
+  transform: translateY(-1px);
+}
