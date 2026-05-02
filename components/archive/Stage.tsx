@@ -5,6 +5,7 @@ import { SineLayout } from "./layouts/SineLayout";
 import { ChineseLayout } from "./layouts/ChineseLayout";
 import { TrommelLayout } from "./layouts/TrommelLayout";
 import { FatGuyLayout } from "./layouts/FatGuyLayout";
+import { PortraitLayout } from "./layouts/PortraitLayout";
 
 type StageProps = {
   projectId: string;
@@ -53,6 +54,8 @@ export function Stage({ projectId, onImageClick }: StageProps) {
       return <TrommelLayout project={project} onImageClick={handle} />;
     case "fatguy":
       return <FatGuyLayout project={project} onImageClick={handle} />;
+    case "portrait":
+      return <PortraitLayout project={project} onImageClick={handle} />;
     default:
       return <PlaceholderLayout project={project} onImageClick={handle} />;
   }
