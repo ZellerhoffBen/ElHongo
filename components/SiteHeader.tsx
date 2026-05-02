@@ -3,7 +3,7 @@ import { mainNavigation } from "@/lib/navigation";
 
 export function SiteHeader() {
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between px-5 py-5 text-[11px] font-bold leading-none tracking-[0.18em] text-zinc-950 mix-blend-multiply sm:px-7 sm:py-6 sm:text-xs">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between px-5 py-5 text-[11px] font-bold leading-none tracking-[0.18em] text-white mix-blend-difference sm:px-7 sm:py-6 sm:text-xs">
       <Link
         href="/"
         className="pointer-events-auto nav-mark group"
