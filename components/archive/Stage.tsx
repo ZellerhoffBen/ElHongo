@@ -9,39 +9,13 @@ import { PortraitLayout } from "./layouts/PortraitLayout";
 import { BombLayout } from "./layouts/BombLayout";
 import { WimmelLayout } from "./layouts/WimmelLayout";
 import { LogosLayout } from "./layouts/LogosLayout";
+import { MiscLayout } from "./layouts/MiscLayout";
 
 type StageProps = {
   projectId: string;
   onImageClick: (project: ArchiveProject, index: number) => void;
 };
 
-function PlaceholderLayout({
-  project,
-  onImageClick,
-}: {
-  project: ArchiveProject;
-  onImageClick: (index: number) => void;
-}) {
-  return (
-    <div className="bg-white p-8">
-      <p className="mb-4 font-mono text-xs tracking-[0.18em] text-black/60">
-        {project.caption}
-      </p>
-      <div className="grid grid-cols-3 gap-3">
-        {project.images.map((src, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={src}
-            src={src}
-            alt=""
-            className="aspect-square w-full cursor-pointer object-cover"
-            onClick={() => onImageClick(i)}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export function Stage({ projectId, onImageClick }: StageProps) {
   const project = findProject(projectId);
@@ -65,7 +39,9 @@ export function Stage({ projectId, onImageClick }: StageProps) {
       return <WimmelLayout project={project} onImageClick={handle} />;
     case "logos":
       return <LogosLayout project={project} onImageClick={handle} />;
+    case "misc":
+      return <MiscLayout project={project} onImageClick={handle} />;
     default:
-      return <PlaceholderLayout project={project} onImageClick={handle} />;
+      return null;
   }
 }
