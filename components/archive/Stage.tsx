@@ -7,6 +7,7 @@ import { TrommelLayout } from "./layouts/TrommelLayout";
 import { FatGuyLayout } from "./layouts/FatGuyLayout";
 import { PortraitLayout } from "./layouts/PortraitLayout";
 import { BombLayout } from "./layouts/BombLayout";
+import { WimmelLayout } from "./layouts/WimmelLayout";
 
 type StageProps = {
   projectId: string;
@@ -59,6 +60,8 @@ export function Stage({ projectId, onImageClick }: StageProps) {
       return <PortraitLayout project={project} onImageClick={handle} />;
     case "bomb":
       return <BombLayout project={project} onImageClick={handle} />;
+    case "wimmel":
+      return <WimmelLayout project={project} onImageClick={handle} />;
     default:
       return <PlaceholderLayout project={project} onImageClick={handle} />;
   }
