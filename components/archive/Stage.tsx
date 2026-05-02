@@ -3,6 +3,7 @@
 import { findProject, type ArchiveProject } from "@/lib/archiveProjects";
 import { SineLayout } from "./layouts/SineLayout";
 import { ChineseLayout } from "./layouts/ChineseLayout";
+import { TrommelLayout } from "./layouts/TrommelLayout";
 
 type StageProps = {
   projectId: string;
@@ -47,6 +48,8 @@ export function Stage({ projectId, onImageClick }: StageProps) {
       return <SineLayout project={project} onImageClick={handle} />;
     case "chinese":
       return <ChineseLayout project={project} onImageClick={handle} />;
+    case "trommel":
+      return <TrommelLayout project={project} onImageClick={handle} />;
     default:
       return <PlaceholderLayout project={project} onImageClick={handle} />;
   }
