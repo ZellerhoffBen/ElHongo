@@ -21,6 +21,17 @@
 :root {
   background: #ffffff;
   color: #111111;
+  --site-header-offset: 52px;
+}
+
+:root[data-site-header-hidden="true"] {
+  --site-header-offset: 0px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --site-header-offset: 60px;
+  }
 }
 
 html,
@@ -77,4 +88,32 @@ body {
 .nav-link:hover {
   letter-spacing: 0.24em;
   transform: translateY(-1px);
+}
+
+.archive-chipbar {
+  scrollbar-width: none;
+}
+
+.archive-chipbar::-webkit-scrollbar {
+  display: none;
+}
+
+@supports (animation-timeline: view()) {
+  .timeline-entry {
+    animation: timeline-rise both ease-out;
+    animation-timeline: view();
+    animation-range: entry 0% cover 32%;
+  }
+}
+
+@keyframes timeline-rise {
+  from {
+    opacity: 0.22;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

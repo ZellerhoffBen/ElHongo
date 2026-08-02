@@ -41,7 +41,11 @@ const LEFT_AND_TOP_SECTOR_DAMPING = 0.8;
 const RIGHT_DIAGONAL_PULL = 2.2;
 const BOTTOM_LEFT_HORIZONTAL_PULL = 1.35;
 
-export function EyeFollowerArt() {
+type EyeFollowerArtProps = {
+  className?: string;
+};
+
+export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [eyeOffset, setEyeOffset] = useState<Point>({ x: 0, y: 0 });
 
@@ -138,7 +142,10 @@ export function EyeFollowerArt() {
   return (
     <div
       ref={frameRef}
-      className="relative w-[min(92vw,940px)] select-none"
+      className={[
+        "relative select-none",
+        className ?? "w-[min(92vw,940px)]",
+      ].join(" ")}
       aria-label="Comic line drawing of a man caught in barbed wire"
     >
       <img

@@ -1,9 +1,52 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { mainNavigation } from "@/lib/navigation";
+import { getNextSiteHeaderState } from "@/lib/siteHeaderVisibility";
 
 export function SiteHeader() {
+  const [hidden, setHidden] = useState(false);
+  const previousYRef = useRef(0);
+  const hiddenRef = useRef(false);
+
+  useEffect(() => {
+    previousYRef.current = window.scrollY;
+
+    function syncHeaderVisibility() {
+      const nextState = getNextSiteHeaderState({
+        previousY: previousYRef.current,
+        nextY: window.scrollY,
+        hidden: hiddenRef.current,
+      });
+
+      previousYRef.current = nextState.previousY;
+
+      if (hiddenRef.current !== nextState.hidden) {
+        hiddenRef.current = nextState.hidden;
+        setHidden(nextState.hidden);
+        document.documentElement.dataset.siteHeaderHidden = String(
+          nextState.hidden,
+        );
+      }
+    }
+
+    window.addEventListener("scroll", syncHeaderVisibility, { passive: true });
+    syncHeaderVisibility();
+
+    return () => {
+      window.removeEventListener("scroll", syncHeaderVisibility);
+      delete document.documentElement.dataset.siteHeaderHidden;
+    };
+  }, []);
+
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between px-5 py-5 text-[11px] font-bold leading-none tracking-[0.18em] text-white mix-blend-difference sm:px-7 sm:py-6 sm:text-xs">
+    <header
+      className={[
+        "pointer-events-none fixed inset-x-0 top-0 z-30 flex items-start justify-between bg-white px-5 py-5 text-[11px] font-bold leading-none tracking-[0.18em] text-black transition-transform duration-200 ease-out sm:px-7 sm:py-6 sm:text-xs",
+        hidden ? "-translate-y-full" : "translate-y-0",
+      ].join(" ")}
+    >
       <Link
         href="/"
         className="pointer-events-auto nav-mark group"

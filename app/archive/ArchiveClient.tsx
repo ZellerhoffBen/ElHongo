@@ -8,14 +8,13 @@ import { Lightbox } from "@/components/archive/Lightbox";
 import { CutOverlay } from "@/components/archive/CutOverlay";
 import { useProjectHash } from "@/lib/useProjectHash";
 import { findProject, type ArchiveProject } from "@/lib/archiveProjects";
-
-const CUT_HOLD_MS = 80;
-const CUT_FADE_MS = 60;
+import { getArchiveCutTransition } from "@/lib/archiveCutTransition";
 
 export default function ArchiveClient() {
   const { activeId, setActiveId } = useProjectHash();
   const [displayedId, setDisplayedId] = useState<string | null>(activeId);
   const [cutting, setCutting] = useState(false);
+  const displayedIdRef = useRef<string | null>(activeId);
 
   // Lightbox state — null when closed
   const [lightboxState, setLightboxState] = useState<{
@@ -23,24 +22,31 @@ export default function ArchiveClient() {
     index: number;
   } | null>(null);
 
-  const cutTimers = useRef<number[]>([]);
-
-  // Drive the cut transition whenever activeId changes from displayedId
   useEffect(() => {
-    if (activeId === displayedId) return;
+    displayedIdRef.current = displayedId;
+  }, [displayedId]);
+
+  // Drive the cut transition from the selection only; displayedId changes mid-cut.
+  useEffect(() => {
+    const transition = getArchiveCutTransition(activeId, displayedIdRef.current);
+    if (!transition) {
+      setCutting(false);
+      return;
+    }
+
     setCutting(true);
     const t1 = window.setTimeout(() => {
-      setDisplayedId(activeId);
-    }, CUT_FADE_MS);
+      setDisplayedId(transition.nextDisplayedId);
+    }, transition.fadeMs);
     const t2 = window.setTimeout(() => {
       setCutting(false);
-    }, CUT_FADE_MS + CUT_HOLD_MS);
-    cutTimers.current.push(t1, t2);
+    }, transition.totalMs);
+
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
-  }, [activeId, displayedId]);
+  }, [activeId]);
 
   // Sync displayedId for the very first hash read
   useEffect(() => {
@@ -50,7 +56,7 @@ export default function ArchiveClient() {
   }, [activeId, displayedId]);
 
   return (
-    <main className="min-h-screen bg-white pt-12 sm:pt-16">
+    <main className="min-h-screen bg-white pt-[var(--site-header-offset)]">
       <ChipBar activeId={activeId} onSelect={setActiveId} />
       <div className="relative">
         {displayedId && findProject(displayedId) ? (

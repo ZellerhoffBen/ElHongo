@@ -32,7 +32,7 @@ export function WimmelLayout({ project, onImageClick }: Props) {
           const startIndex = runningIndex;
           runningIndex += row.length;
           return (
-            <div key={rIdx} className="flex w-full">
+            <div key={rIdx} className="flex w-full flex-col sm:flex-row">
               {row.map((src, j) => {
                 const idx = startIndex + j;
                 return (
@@ -40,7 +40,7 @@ export function WimmelLayout({ project, onImageClick }: Props) {
                     type="button"
                     key={src}
                     onClick={() => onImageClick(idx)}
-                    className="relative block flex-1 border-r-2 border-black last:border-r-0"
+                    className="relative block w-full border-b-2 border-black last:border-b-0 sm:flex-1 sm:border-b-0 sm:border-r-2 sm:last:border-r-0"
                   >
                     <div className="relative aspect-[4/3] w-full">
                       <Image
