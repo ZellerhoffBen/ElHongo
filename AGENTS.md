@@ -1,6 +1,144 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+# Project: Illustrator Portfolio
+
+## Creative direction
+- The artwork is always the main visual element.
+- Avoid generic SaaS layouts, gradients and dashboard styling.
+- Use asymmetric editorial compositions.
+- Treat pages like comic panels or printed spreads.
+- Typography should support the illustrations, not compete with them.
+- Prefer unusual but readable layouts over standard card grids.
+
+# AGENTS.md
+
+## Goal
+
+Create frontend work that feels specific, authored, and visually distinctive.
+
+Do not default to generic portfolio layouts, standard landing-page patterns, uniform card grids, or component-library aesthetics.
+
+The result should feel connected to the artist, the artwork, and the intended atmosphere.
+
+## Working method
+
+Before writing code:
+
+1. Inspect the available artwork, references, copy, and assets.
+2. Identify recurring visual qualities, such as composition, rhythm, colour, texture, line, humour, contrast, or imperfection.
+3. Propose at least three clearly different visual directions.
+4. Explain what makes each direction specific to this project.
+5. Reject directions that could fit any generic portfolio.
+6. Choose the strongest direction before implementation.
+
+## Design decisions
+
+Every major design decision should have a reason.
+
+Prefer decisions derived from:
+
+* the artist’s work,
+* the artist’s personality,
+* the content,
+* the intended emotional effect,
+* the interaction concept.
+
+Do not add visual effects only because they are fashionable or technically impressive.
+
+Do not solve a generic layout by placing decorative artwork on top of it.
+
+The composition, typography, interaction, and pacing should all contribute to the concept.
+
+## Exploration
+
+Explore unusual solutions before choosing conventional ones.
+
+Consider:
+
+* asymmetric composition,
+* unexpected scale,
+* layered content,
+* editorial pacing,
+* custom transitions,
+* expressive typography,
+* controlled irregularity,
+* spatial or narrative interaction.
+
+Unusual does not mean confusing.
+
+The interface must remain readable, navigable, and usable.
+
+## Anti-template check
+
+Before accepting a result, ask:
+
+> Could this design belong to a photographer, agency, startup, or developer portfolio by replacing only the images and text?
+
+If yes, revise it.
+
+Increase specificity through the underlying composition, behaviour, typography, rhythm, or interaction model.
+
+## Implementation process
+
+Build in small visual stages.
+
+1. Establish composition and hierarchy.
+2. Test responsive behaviour.
+3. Add only the interactions that strengthen the concept.
+4. Review the implementation in a real browser.
+5. Capture desktop and mobile screenshots.
+6. Compare the result against the original direction.
+7. Remove anything that feels generic, decorative, repetitive, or unnecessary.
+
+Do not polish weak ideas. Rework the concept first.
+
+## Motion
+
+Use motion selectively.
+
+Motion should:
+
+* clarify relationships,
+* reinforce the visual concept,
+* support narrative or spatial continuity,
+* make interaction feel intentional.
+
+Avoid repetitive entrance animations, excessive parallax, scroll hijacking, and constant movement.
+
+Always support reduced motion.
+
+## Quality standard
+
+A result is successful when it is:
+
+* specific to the artist,
+* visually memorable,
+* coherent,
+* usable,
+* responsive,
+* technically maintainable,
+* restrained enough for the artwork to remain important.
+
+Prefer one strong idea executed consistently over many unrelated effects.
+
+## Review behaviour
+
+After implementation, review the work critically.
+
+Look for:
+
+* generic AI-generated patterns,
+* repeated cards or sections,
+* weak hierarchy,
+* arbitrary effects,
+* interactions without purpose,
+* desktop ideas that fail on mobile,
+* design choices not grounded in the content.
+
+List the problems before making corrections.
+
+Do not describe mediocre output as polished, creative, or finished.
+
 
 ## Commands
 
