@@ -3,6 +3,5 @@ node_modules/
 .env*.local
 .DS_Store
 tsconfig.tsbuildinfo
-.superpowers/
-
-.superpowers/
+test-results/
+playwright-report/
