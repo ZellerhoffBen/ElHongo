@@ -1,104 +1,82 @@
-export type LayoutId =
-  | "sine"
-  | "chinese"
-  | "trommel"
-  | "fatguy"
-  | "portrait"
-  | "bomb"
-  | "wimmel"
-  | "logos"
-  | "misc";
+import { workProjects, type WorkImage, type WorkProject } from "./workProjects";
 
-export type ArchiveProject = {
-  id: string;
-  label: string;
-  layout: LayoutId;
-  /** Tailwind / inline classes applied to this project's chip in the chip bar. */
-  chipClassName: string;
-  /** Image paths relative to the site root, e.g. /art/sine2000/sine2000-01.png */
-  images: string[];
-  caption: string;
-};
+const image = (
+  src: string,
+  width: number,
+  height: number,
+  alt: string,
+): WorkImage => ({ src, width, height, alt });
 
-const range = (prefix: string, n: number, ext = "png"): string[] =>
-  Array.from({ length: n }, (_, i) =>
-    `${prefix}-${String(i + 1).padStart(2, "0")}.${ext}`,
-  );
-
-export const archiveProjects: ArchiveProject[] = [
-  {
-    id: "sine2000",
-    label: "SINE_2000",
-    layout: "sine",
-    chipClassName: "font-mono tracking-tight",
-    images: range("sine2000", 8).map((f) => `/art/sine2000/${f}`),
-    caption: "// SCRATCHBOARD · BERLIN, 2000 · 8 WORKS",
-  },
-  {
-    id: "chinese",
-    label: "Chinese",
-    layout: "chinese",
-    chipClassName: "font-serif italic",
-    images: range("chineseguys", 2).map((f) => `/art/chinese/${f}`),
-    caption: "pen on paper · 2 works",
-  },
-  {
-    id: "trommel",
-    label: "TROMMEL",
-    layout: "trommel",
-    chipClassName: "font-['Impact','Anton',sans-serif] tracking-normal",
-    images: range("trommel", 3).map((f) => `/art/trommel/${f}`),
-    caption: "TROMMEL · ACRYLIC ON DRUM HEAD · 3 PIECES",
-  },
-  {
-    id: "fatguy",
-    label: "FAT GUY",
-    layout: "fatguy",
-    chipClassName: "font-['Arial_Black',sans-serif] tracking-tight",
-    images: range("fatguyfrontback", 2).map((f) => `/art/fatguy/${f}`),
-    caption: "FAT GUY · FRONT / BACK",
-  },
-  {
-    id: "portrait",
-    label: "portrait",
-    layout: "portrait",
-    chipClassName: "font-serif font-light italic tracking-wide normal-case",
-    images: range("portrait", 2).map((f) => `/art/portrait/${f}`),
-    caption: "stippled ink on paper · untitled, untitled.",
-  },
-  {
-    id: "bomb",
-    label: "BOMB!",
-    layout: "bomb",
-    chipClassName: "font-['Impact','Anton',sans-serif] tracking-normal",
-    images: range("comicbh", 4).map((f) => `/art/bombcomic/${f}`),
-    caption: "BOMB! · 4 PANELS · TIK TIK TIK…",
-  },
+const archiveCollections: WorkProject[] = [
   {
     id: "wimmelbilder",
-    label: "Wimmelbilder",
-    layout: "wimmel",
-    chipClassName: "font-serif normal-case",
-    images: range("wimmelbilder", 7).map((f) => `/art/wimmelbilder/${f}`),
-    caption: "WIMMELBILDER · INK + DIGITAL · 7 WORKS",
+    number: "04",
+    title: "WIMMELBILDER",
+    medium: "Tinte / Digital",
+    kind: "Serie",
+    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    tone: "color",
+    previewImageIndex: 2,
+    images: [
+      image("/art/wimmelbilder/wimmelbilder-01.png", 2070, 1422, "Dicht bevölkerte farbige Stadtszene"),
+      image("/art/wimmelbilder/wimmelbilder-02.png", 2070, 1422, "Detailreiches farbiges Wimmelbild"),
+      image("/art/wimmelbilder/wimmelbilder-03.png", 2064, 1422, "Farbige Stadt mit zahlreichen Figuren"),
+      image("/art/wimmelbilder/wimmelbilder-04.png", 2070, 1422, "Breite Illustration voller kleiner Szenen"),
+      image("/art/wimmelbilder/wimmelbilder-05.png", 2074, 1416, "Detailreiches Panorama von EL HONGO"),
+      image("/art/wimmelbilder/wimmelbilder-06.png", 2066, 1416, "Farbige Menschenmenge in einer breiten Szene"),
+      image("/art/wimmelbilder/wimmelbilder-07.png", 2066, 1390, "Wimmelbild mit zahlreichen Figuren"),
+    ],
   },
   {
-    id: "logos",
-    label: "LOGOS",
-    layout: "logos",
-    chipClassName: "font-bold tracking-[0.18em]",
-    images: range("logos", 2).map((f) => `/art/logos/${f}`),
-    caption: "COMMERCIAL WORK · 2 IDENTITIES",
+    id: "figuren",
+    number: "05",
+    title: "FIGUREN",
+    medium: "Zeichnung / Farbe",
+    kind: "Sammlung",
+    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    tone: "paper",
+    images: [
+      image("/art/misc/misc-01.png", 1924, 2074, "Zwei farbige Figuren in weiter Kleidung"),
+      image("/art/misc/misc-02.png", 2068, 2052, "Farbige Charakterillustration"),
+      image("/art/misc/misc-03.png", 2062, 1506, "Groteske farbige Szene"),
+      image("/art/misc/misc-04.png", 2054, 1628, "Illustration aus dem offenen Archiv"),
+      image("/art/misc/misc-05.png", 1938, 2068, "Gezeichnete Figur von EL HONGO"),
+      image("/art/misc/misc-06.png", 1716, 2066, "Farbige Figur aus dem offenen Archiv"),
+      image("/art/misc/misc-07.png", 2064, 1996, "Menschliche Figur in einer Glasflasche"),
+      image("/art/misc/misc-08.png", 2060, 2070, "Groteske Charakterzeichnung"),
+      image("/art/misc/misc-09.png", 1638, 2070, "Illustration einer Figur"),
+      image("/art/misc/misc-10.png", 2060, 1936, "Farbige Zeichnung aus dem Archiv"),
+      image("/art/misc/misc-11.png", 1952, 2058, "Charakterillustration von EL HONGO"),
+      image("/art/misc/misc-12.png", 2038, 2000, "Mann, der in Stacheldraht gefangen ist"),
+      image("/art/misc/misc-13.png", 1554, 2068, "Anatomische Kopfzeichnung mit Schrift"),
+      image("/art/misc/misc-14.png", 1884, 2048, "Stürzende gezeichnete Figur"),
+      image("/art/misc/misc-16.png", 2074, 2060, "Illustration aus dem offenen Archiv"),
+      image("/art/misc/misc-17.png", 2072, 1560, "Breite farbige Illustration"),
+      image("/art/misc/misc-18.png", 1896, 2058, "Groteskes Gesicht mit Stachelhelm"),
+      image("/art/misc/misc-19.png", 1892, 2060, "Zwei Figuren an einem Fenster"),
+      image("/art/misc/misc-21.png", 1650, 2054, "Charakterzeichnung von EL HONGO"),
+      image("/art/misc/misc-23.png", 2066, 2030, "Farbige Figurenzeichnung"),
+    ],
   },
   {
-    id: "misc",
-    label: "misc.",
-    layout: "misc",
-    chipClassName: "font-serif italic normal-case",
-    images: range("misc", 24).map((f) => `/art/misc/${f}`),
-    caption: "misc. — 24 things, in no particular order.",
+    id: "beobachtungen",
+    number: "06",
+    title: "BEOBACHTUNGEN",
+    medium: "Stift / Dokumentation",
+    kind: "Sammlung",
+    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    tone: "paper",
+    images: [
+      image("/art/chinese/chineseguys-01.png", 1604, 2062, "Zeichnung zweier älterer Männer"),
+      { ...image("/art/chinese/chineseguys-02.png", 1622, 2066, "Fotografische Referenz mit zwei älteren Männern"), documentation: true },
+    ],
   },
 ];
 
-export const findProject = (id: string | null | undefined): ArchiveProject | null =>
-  archiveProjects.find((p) => p.id === id) ?? null;
+export const archiveProjects: WorkProject[] = [
+  ...workProjects,
+  ...archiveCollections,
+];
+
+export const findArchiveProject = (id: string): WorkProject | undefined =>
+  archiveProjects.find((project) => project.id === id);

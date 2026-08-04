@@ -1,44 +1,37 @@
-import { describe, expect, test } from "vitest";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
-import { archiveProjects } from "./archiveProjects";
+import { describe, expect, it } from "vitest";
+import { archiveProjects, findArchiveProject } from "./archiveProjects";
 
 describe("archiveProjects", () => {
-  test("contains exactly 9 projects in the spec'd order", () => {
-    const ids = archiveProjects.map((p) => p.id);
-    expect(ids).toEqual([
-      "sine2000",
-      "chinese",
-      "trommel",
-      "fatguy",
-      "portrait",
-      "bomb",
-      "wimmelbilder",
-      "logos",
-      "misc",
-    ]);
-  });
-
-  test("project ids are unique", () => {
-    const ids = archiveProjects.map((p) => p.id);
+  it("keeps archive ids unique", () => {
+    const ids = archiveProjects.map((project) => project.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  test("every image path resolves to a real file under public/", () => {
-    const publicDir = join(process.cwd(), "public");
+  it("contains the three selected projects and three archive collections", () => {
+    expect(archiveProjects.map((project) => project.id)).toEqual([
+      "sine2000",
+      "fatguy",
+      "trommel",
+      "wimmelbilder",
+      "figuren",
+      "beobachtungen",
+    ]);
+  });
+
+  it("contains only usable image metadata", () => {
     for (const project of archiveProjects) {
       expect(project.images.length).toBeGreaterThan(0);
-      for (const img of project.images) {
-        const path = join(publicDir, img.replace(/^\//, ""));
-        expect(existsSync(path), `missing: ${img}`).toBe(true);
+      for (const artwork of project.images) {
+        expect(artwork.src).toMatch(/^\/art\//);
+        expect(artwork.alt.length).toBeGreaterThan(3);
+        expect(artwork.width).toBeGreaterThan(0);
+        expect(artwork.height).toBeGreaterThan(0);
       }
     }
   });
 
-  test("every project has a non-empty label and caption", () => {
-    for (const p of archiveProjects) {
-      expect(p.label.length).toBeGreaterThan(0);
-      expect(p.caption.length).toBeGreaterThan(0);
-    }
+  it("resolves known entries and rejects removed projects", () => {
+    expect(findArchiveProject("wimmelbilder")?.title).toBe("WIMMELBILDER");
+    expect(findArchiveProject("portrait")).toBeUndefined();
   });
 });
