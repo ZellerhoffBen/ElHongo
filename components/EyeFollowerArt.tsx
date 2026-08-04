@@ -50,6 +50,9 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
   const [eyeOffset, setEyeOffset] = useState<Point>({ x: 0, y: 0 });
 
   useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reducedMotion.matches) return;
+
     const pointerHistoryRef = { current: [] as TimedPoint[] };
     const smoothPointerRef = { current: null as Point | null };
     let animationFrame = 0;
@@ -109,7 +112,7 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
       animationFrame = requestAnimationFrame(updateEye);
     }
 
-    function handlePointerMove(event: MouseEvent | PointerEvent) {
+    function handlePointerMove(event: PointerEvent) {
       pointerHistoryRef.current = prunePointerHistory(
         [
           ...pointerHistoryRef.current,
@@ -127,13 +130,11 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
     }
 
     window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("mousemove", handlePointerMove);
     window.addEventListener("resize", handleResize);
     animationFrame = requestAnimationFrame(updateEye);
 
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("mousemove", handlePointerMove);
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrame);
     };
@@ -146,7 +147,8 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
         "relative select-none",
         className ?? "w-[min(92vw,940px)]",
       ].join(" ")}
-      aria-label="Comic line drawing of a man caught in barbed wire"
+      role="img"
+      aria-label="Comiczeichnung eines Mannes, der in Stacheldraht festhängt"
     >
       <img
         src="/mask_test/background_white_eye.png"

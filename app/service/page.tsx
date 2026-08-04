@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function ServicePage() {
-  return <main className="min-h-screen bg-white" />;
+  redirect("/#kontakt");
 }
