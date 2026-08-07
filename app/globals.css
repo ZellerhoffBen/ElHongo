@@ -38,6 +38,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html:has(.profile-dialog[open]) {
+  overflow: hidden;
+}
+
 @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
   html:has(.home-snap-page) {
     scroll-padding-top: var(--site-header-offset);
@@ -117,6 +121,30 @@ button:focus-visible {
 .nav-mark:hover,
 .nav-link:hover {
   letter-spacing: 0.24em;
+}
+
+.profile-dialog {
+  width: min(56rem, calc(100% - 1.5rem));
+  max-width: none;
+  max-height: calc(100dvh - 1.5rem);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.profile-dialog::backdrop {
+  background: rgb(10 10 10 / 74%);
+}
+
+@media (min-width: 640px) {
+  .profile-dialog {
+    width: min(56rem, calc(100% - 3rem));
+    max-height: calc(100dvh - 3rem);
+  }
 }
 
 .work-number,
