@@ -1,8 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import { EyeFollowerArt } from "@/components/EyeFollowerArt";
 import { SiteFooter } from "@/components/SiteFooter";
-import { workProjects, type WorkProject } from "@/lib/workProjects";
+import {
+  CurrentFeature,
+  type CurrentFeatureData,
+} from "@/components/portfolio/CurrentFeature";
 
 const studioImages = [
   {
@@ -25,105 +27,74 @@ const studioImages = [
   },
 ];
 
-type FeaturedProjectProps = {
-  project: WorkProject;
-  index: number;
-  fillsPanel?: boolean;
-};
-
-function FeaturedProject({
-  project,
-  index,
-  fillsPanel = false,
-}: FeaturedProjectProps) {
-  const cover = project.id === "trommel" ? project.images[1] : project.images[0];
-  const inverse = project.tone === "ink";
-  const imageFirst = index % 2 === 1;
-
-  return (
-    <Link
-      href={`/archive#${project.id}`}
-      className={[
-        "group grid border-b border-black md:grid-cols-2",
-        fillsPanel
-          ? "min-h-[62vh] lg:h-full lg:min-h-0"
-          : "min-h-[62vh]",
-        inverse ? "bg-black text-white" : "bg-[var(--paper)] text-black",
-      ].join(" ")}
-    >
-      <div
-        className={[
-          "flex min-h-0 flex-col justify-between gap-12 p-5 sm:p-7 lg:p-10",
-          imageFirst ? "md:order-2" : "",
-        ].join(" ")}
-      >
-        <div className="flex justify-between gap-5">
-          <span
-            className={
-              inverse ? "work-number text-white/50" : "work-number text-black/45"
-            }
-          >
-            {project.number}
-          </span>
-          <span
-            className={
-              inverse
-                ? "work-kicker text-right text-white/50"
-                : "work-kicker text-right text-black/50"
-            }
-          >
-            {project.year ? `${project.year} · ` : ""}
-            {project.medium}
-          </span>
-        </div>
-
-        <div>
-          <h3 className="max-w-[10ch] text-[clamp(3.3rem,8vw,8.5rem)] font-bold uppercase leading-[0.76] tracking-[-0.06em]">
-            {project.title}
-          </h3>
-          <p
-            className={
-              inverse
-                ? "mt-7 max-w-xl text-sm leading-relaxed text-white/60"
-                : "mt-7 max-w-xl text-sm leading-relaxed text-black/60"
-            }
-          >
-            {project.summary}
-          </p>
-          <span className="work-open-link mt-8">Projekt ansehen ↗</span>
-        </div>
-      </div>
-
-      <div
-        className={[
-          "relative min-h-[54vh] overflow-hidden lg:min-h-0",
-          inverse ? "bg-black" : "bg-white",
-          imageFirst ? "md:order-1" : "",
-        ].join(" ")}
-      >
-        <Image
-          src={cover.src}
-          alt={cover.alt}
-          fill
-          sizes="(min-width: 768px) 50vw, 100vw"
-          className={[
-            "transition-transform duration-500 ease-out group-hover:scale-[1.015]",
-            project.id === "trommel"
-              ? "object-cover"
-              : "object-contain p-5 sm:p-8",
-          ].join(" ")}
-        />
-      </div>
-    </Link>
-  );
-}
+const currentFeatures: CurrentFeatureData[] = [
+  {
+    id: "status-tinnitus",
+    number: "01",
+    eyebrow: "Ausstellung",
+    status: "20 Okt 2026",
+    title: "Status Tinnitus",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet risus eget mauris posuere interdum.",
+    details: [
+      {
+        label: "Wann",
+        value: "20.10.2026 · 18:00",
+        dateTime: "2026-10-20T18:00:00+02:00",
+      },
+      {
+        label: "Wo",
+        value: "Musterstrasse 6 · 8006 Zürich",
+      },
+    ],
+    image: {
+      src: "/art/current/status-tinnitus.png",
+      alt: "Ausstellungsplakat Status Tinnitus",
+      aspect: "portrait",
+    },
+    tone: "paper",
+    mediaSide: "right",
+    mediaInset: true,
+  },
+  {
+    id: "randwelten",
+    number: "02",
+    eyebrow: "Aktuelles Projekt",
+    status: "In Arbeit",
+    title: "Randwelten",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vitae arcu at neque faucibus fermentum.",
+    details: [
+      {
+        label: "Jahr",
+        value: "2025",
+      },
+      {
+        label: "Ort",
+        value: "ZHdK",
+      },
+      {
+        label: "Format",
+        value: "Abschlussprojekt Propädeutikum",
+      },
+    ],
+    image: {
+      src: "/art/current/randwelten.png",
+      alt: "Präsentation des Projekts Randwelten an der ZHdK",
+      aspect: "landscape",
+    },
+    tone: "ink",
+    mediaSide: "left",
+    mediaInset: true,
+  },
+];
 
 export default function Home() {
   return (
     <main className="home-snap-page bg-[var(--paper)] pt-[var(--site-header-offset)] text-black">
       <section
         id="el-hongo"
-        className="home-snap-panel scroll-mt-[var(--site-header-offset)] border-b border-black lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.18fr)] lg:overflow-hidden"
+        className="home-snap-panel home-snap-intro scroll-mt-[var(--site-header-offset)] border-b border-black lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.18fr)] lg:overflow-hidden"
       >
         <figure className="flex min-h-[58svh] items-center justify-center overflow-hidden border-b border-black bg-white sm:min-h-[68svh] lg:min-h-0 lg:border-b-0 lg:border-r">
           <EyeFollowerArt className="w-[130%] max-w-none shrink-0" />
@@ -180,30 +151,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="arbeiten"
-        className="scroll-mt-[var(--site-header-offset)] border-t border-black"
-      >
-        <div className="home-snap-panel scroll-mt-[var(--site-header-offset)] lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:grid-rows-[auto_minmax(0,1fr)] lg:overflow-hidden">
-          <header className="flex items-end justify-between gap-8 border-b border-black px-5 py-8 sm:px-7 sm:py-10 lg:px-12 lg:py-7">
-            <div>
-              <p className="work-kicker text-black/50">Ausgewählte Arbeiten</p>
-              <h2 className="mt-3 text-[clamp(2.2rem,5.8vw,6.4rem)] font-bold uppercase leading-none tracking-[-0.05em]">
-                Drei Projekte
-              </h2>
-            </div>
-            <span className="work-number text-black/45">01—03</span>
-          </header>
-
-          <FeaturedProject project={workProjects[0]} index={0} fillsPanel />
-        </div>
-
-        {workProjects.slice(1).map((project, index) => (
-          <FeaturedProject
-            key={project.id}
-            project={project}
-            index={index + 1}
-          />
+      <section id="aktuell" aria-label="Aktuell">
+        {currentFeatures.map((feature) => (
+          <CurrentFeature key={feature.id} feature={feature} />
         ))}
       </section>
 
