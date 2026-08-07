@@ -34,11 +34,15 @@ export function ArchiveClient() {
     [previewId, selectedProject],
   );
   const previewImage = getPreviewImage(previewProject);
-  const selectedIndex = archiveProjects.findIndex(
-    (project) => project.id === selectedProject.id,
-  );
   const hasLongProjectTitle = selectedProject.title.length >= 12;
-  const nextProject = archiveProjects[(selectedIndex + 1) % archiveProjects.length];
+
+  const scrollToRegister = useCallback(() => {
+    registerRef.current?.scrollIntoView({
+      behavior: getScrollBehavior(),
+      block: "start",
+    });
+    registerRef.current?.focus({ preventScroll: true });
+  }, []);
 
   const openProject = useCallback((id: string, scroll = true) => {
     const project = findArchiveProject(id);
@@ -78,12 +82,12 @@ export function ArchiveClient() {
   }, []);
 
   return (
-    <main className="bg-[var(--paper)] pt-[var(--site-header-offset)] text-black">
+    <main className="archive-snap-page bg-[var(--paper)] pt-[var(--site-header-offset)] text-black">
       <section
         ref={registerRef}
         tabIndex={-1}
         aria-labelledby="archive-title"
-        className="scroll-mt-[var(--site-header-offset)] border-b border-black focus:outline-none lg:grid lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)]"
+        className="archive-snap-point scroll-mt-[var(--site-header-offset)] border-b border-black focus:outline-none lg:grid lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)]"
       >
         <div className="lg:border-r lg:border-black">
           <header className="flex min-h-36 items-end border-b border-black px-5 py-8 sm:min-h-40 sm:px-7 lg:px-10">
@@ -182,17 +186,11 @@ export function ArchiveClient() {
         aria-labelledby="project-title"
         className="scroll-mt-[var(--site-header-offset)] focus:outline-none"
       >
-        <header className="grid gap-12 border-b border-black px-5 py-10 sm:gap-14 sm:px-7 sm:py-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)] lg:items-end lg:px-12 lg:py-14">
+        <header className="archive-snap-point grid gap-12 border-b border-black px-5 py-10 sm:gap-14 sm:px-7 sm:py-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)] lg:items-end lg:px-12 lg:py-14">
           <div>
             <button
               type="button"
-              onClick={() => {
-                registerRef.current?.scrollIntoView({
-                  behavior: getScrollBehavior(),
-                  block: "start",
-                });
-                registerRef.current?.focus({ preventScroll: true });
-              }}
+              onClick={scrollToRegister}
               className="work-open-link"
             >
               ↑ Zum Register
@@ -225,19 +223,15 @@ export function ArchiveClient() {
 
         <ProjectGallery key={selectedProject.id} project={selectedProject} />
 
-        <button
-          type="button"
-          onClick={() => openProject(nextProject.id)}
-          className="group grid w-full grid-cols-[1fr_auto] items-end border-t border-black bg-[var(--paper)] px-5 py-9 text-left hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white focus-visible:outline-offset-[-4px] sm:px-7 lg:px-12 lg:py-14"
-        >
-          <span>
-            <span className="work-kicker opacity-45">Nächstes Projekt</span>
-            <strong className="mt-4 block text-[clamp(2.8rem,7vw,7.5rem)] font-bold uppercase leading-[0.78] tracking-[-0.055em]">
-              {nextProject.title}
-            </strong>
-          </span>
-          <span className="text-3xl transition-transform group-hover:translate-x-1">→</span>
-        </button>
+        <div className="flex justify-end border-t border-black px-5 py-4 sm:px-7 lg:px-12">
+          <button
+            type="button"
+            onClick={scrollToRegister}
+            className="nav-link min-h-10 work-kicker text-black/55 hover:text-black"
+          >
+            ↑ Zum Register
+          </button>
+        </div>
       </section>
 
       <SiteFooter />

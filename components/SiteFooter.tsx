@@ -19,7 +19,7 @@ export function SiteFooter() {
   return (
     <footer
       id="kontakt"
-      className="scroll-mt-[var(--site-header-offset)] border-t border-black bg-[var(--paper)] text-black"
+      className="site-footer-snap scroll-mt-[var(--site-header-offset)] border-t border-black bg-[var(--paper)] text-black"
     >
       <nav
         aria-label="Kontaktmöglichkeiten"

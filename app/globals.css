@@ -43,7 +43,8 @@ html:has(.profile-dialog[open]) {
 }
 
 @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-  html:has(.home-snap-page) {
+  html:has(.home-snap-page),
+  html:has(.archive-snap-page) {
     scroll-padding-top: var(--site-header-offset);
     scroll-snap-type: y proximity;
   }
@@ -51,6 +52,19 @@ html:has(.profile-dialog[open]) {
   .home-snap-panel {
     scroll-margin-top: 0;
     scroll-snap-align: start;
+  }
+
+  .home-snap-intro {
+    scroll-snap-align: none;
+  }
+
+  .archive-snap-point {
+    scroll-margin-top: 0;
+    scroll-snap-align: start;
+  }
+
+  .site-footer-snap {
+    scroll-snap-align: end;
   }
 }
 
