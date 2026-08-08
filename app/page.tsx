@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProfileLink } from "@/components/ArtistProfile";
 import { EyeFollowerArt } from "@/components/EyeFollowerArt";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
@@ -91,60 +92,80 @@ const currentFeatures: CurrentFeatureData[] = [
 
 export default function Home() {
   return (
-    <main className="home-snap-page bg-[var(--paper)] pt-[var(--site-header-offset)] text-black">
+    <main
+      id="inhalt"
+      className="home-snap-page tone-paper bg-paper pt-[var(--site-header-offset)] text-fg"
+    >
       <section
         id="el-hongo"
-        className="home-snap-panel home-snap-intro scroll-mt-[var(--site-header-offset)] border-b border-black lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.18fr)] lg:overflow-hidden"
+        className="home-snap-panel home-snap-intro scroll-mt-[var(--site-header-offset)] border-b border-ink lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.18fr)] lg:overflow-hidden"
       >
-        <figure className="flex min-h-[58svh] items-center justify-center overflow-hidden border-b border-black bg-white sm:min-h-[68svh] lg:min-h-0 lg:border-b-0 lg:border-r">
+        <figure className="flex min-h-[58svh] items-center justify-center overflow-hidden border-b border-ink bg-white sm:min-h-[68svh] lg:min-h-0 lg:border-b-0 lg:border-r">
           <EyeFollowerArt className="w-[130%] max-w-none shrink-0" />
         </figure>
 
-        <div className="flex min-h-[76svh] flex-col justify-between px-5 py-10 sm:px-7 sm:py-14 lg:min-h-0 lg:px-12 lg:py-16">
-          <div>
-            <h1
-              aria-label="EL HONGO aka Jonas Aellig"
-              className="mt-6 text-[clamp(3.7rem,10.4vw,11rem)] font-bold uppercase leading-[0.74] tracking-[-0.065em]"
+        {/*
+          Three rows on desktop: the name sits in the middle one, flanked by two
+          equal 1fr rows, so it lands on the column's true vertical centre. The
+          tagline occupies the last row and is pinned to its bottom edge.
+          Below lg the fr rows collapse and the gap does the spacing.
+        */}
+        <div className="page-x grid gap-[clamp(1.75rem,5svh,3.25rem)] py-section sm:py-section-lg lg:min-h-0 lg:grid-rows-[1fr_auto_1fr] lg:gap-0 lg:py-[clamp(1rem,3.5svh,4rem)]">
+          <h1
+            aria-label="EL HONGO aka Jonas Aellig"
+            className="text-display-hero uppercase lg:row-start-2"
+          >
+            <span aria-hidden="true" className="block">
+              EL HONGO
+            </span>
+            <span
+              aria-hidden="true"
+              className="my-3 block text-[0.6875rem] font-normal normal-case leading-none tracking-[0.18em] text-fg-faint sm:my-4"
             >
-              <span aria-hidden="true" className="block">
-                EL HONGO
-              </span>
-              <span
-                aria-hidden="true"
-                className="my-3 block text-[clamp(0.55rem,0.105em,1.1rem)] font-normal normal-case leading-none tracking-[0.12em] text-black/40 sm:my-4"
-              >
-                aka
-              </span>
-              <span aria-hidden="true" className="block">
-                Jonas Aellig
-              </span>
-            </h1>
-          </div>
+              aka
+            </span>
+            <span aria-hidden="true" className="block">
+              Jonas Aellig
+            </span>
+          </h1>
 
-          <p className="mt-20 max-w-[22ch] text-[clamp(1.7rem,3.6vw,4rem)] font-bold leading-[0.98] tracking-[-0.03em]">
-            Illustrator in Zürich. Student in Hamburg. Whatever du hier hinschreiben willst
-          </p>
+          <div className="flex flex-col items-start gap-6 lg:row-start-3 lg:gap-[clamp(1rem,2.5svh,2rem)] lg:self-end lg:pt-[clamp(0.5rem,2svh,2.5rem)]">
+            <p className="max-w-[22ch] text-lead">
+              Illustrator in Zürich. Student in Hamburg. Whatever du hier hinschreiben willst
+            </p>
+            <ProfileLink />
+          </div>
         </div>
       </section>
 
-      <section className="home-snap-panel scroll-mt-[var(--site-header-offset)] bg-black px-5 py-12 text-white sm:px-7 sm:py-16 lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:grid-rows-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:overflow-hidden lg:px-12 lg:py-10">
-        <h2 className="max-w-[11ch] text-[clamp(3.4rem,8.5vw,9rem)] font-bold uppercase leading-[1] tracking-[-0.06em] lg:self-center lg:text-[clamp(3.4rem,6.8vw,7.5rem)] lg:leading-[0.86]">
+      <section className="home-snap-panel tone-ink page-x scroll-mt-[var(--site-header-offset)] bg-surface py-section text-fg sm:py-section-lg lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:grid-rows-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:overflow-hidden lg:py-section">
+        <h2 className="max-w-[11ch] text-display-lg uppercase lg:self-center">
           Lore Ipsume. Loremit Doloritet.
         </h2>
 
-        <div className="mt-14 grid gap-px bg-white/30 p-px sm:mt-20 md:grid-cols-3 lg:mt-0 lg:min-h-0">
+        {/*
+          Below lg this is a swipeable rail of panels rather than a stack of
+          near-empty boxes — the artwork fills its frame at every width and the
+          "spread" pacing of the desktop layout survives on touch devices.
+        */}
+        <div
+          role="region"
+          aria-label="Ausgewählte Blätter"
+          tabIndex={0}
+          className="studio-rail page-x-bleed mt-section-sm flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1 sm:mt-section sm:gap-4 sm:px-7 lg:mt-0 lg:grid lg:min-h-0 lg:grid-cols-3 lg:gap-px lg:overflow-visible lg:bg-rule-soft lg:p-px"
+        >
           {studioImages.map((image) => (
             <figure
               key={image.src}
-              className="flex min-h-[58vh] items-center justify-center overflow-hidden bg-white p-6 sm:p-10 lg:min-h-0 lg:p-6"
+              className="flex aspect-[4/5] w-[78%] shrink-0 snap-center items-center justify-center overflow-hidden border border-rule-soft bg-white p-5 sm:w-[58%] sm:p-8 lg:aspect-auto lg:w-auto lg:shrink lg:border-0 lg:p-6"
             >
               <Image
                 src={image.src}
                 alt={image.alt}
                 width={image.width}
                 height={image.height}
-                sizes="(min-width: 768px) 33vw, 100vw"
-                className="h-auto max-h-[70vh] w-full object-contain lg:h-full lg:max-h-full"
+                sizes="(min-width: 1024px) 33vw, 78vw"
+                className="h-full w-full object-contain"
               />
             </figure>
           ))}
