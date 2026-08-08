@@ -145,7 +145,8 @@ Do not describe mediocre output as polished, creative, or finished.
 ```bash
 npm run dev      # start Next.js dev server (localhost:3000)
 npm run build    # production build
-npm test         # run Vitest test suite (vitest run)
+npm test         # run Vitest test suite (vitest run lib)
+npm run test:e2e # run Playwright suite (serves the app on port 3100)
 ```
 
 There is no lint script configured. TypeScript checking is implicit via `tsc` / the build.
@@ -182,8 +183,39 @@ The pupil image is anchored to `EYE_CENTER` (percentage of image dimensions) and
 
 ### Navigation
 
-`lib/navigation.ts` is the single source of truth for nav items. `components/SiteHeader.tsx` renders them as a fixed overlay header using `mix-blend-multiply` so it reads over any background.
+`lib/navigation.ts` is the single source of truth for nav items and for which
+item counts as active (`/work/*` redirects into the archive, so those paths keep
+**Archiv** current). `components/SiteHeader.tsx` renders them in a fixed header
+on a solid `paper` ground with a hairline bottom border. Nav hit areas fill the
+full header height — the label is 11px, the target is not.
 
-### Styling
+### Design tokens
 
-Custom nav hover animations (underline slide + letter-spacing) are defined as `.nav-link` / `.nav-mark` classes in `app/globals.css` rather than Tailwind utilities. The site font is **Styrene A** loaded via `@font-face` from `/fonts/`.
+`tailwind.config.ts` contains no raw values. Every colour, spacing step and type
+size is an alias over a custom property defined in `app/globals.css`:
+
+- **Tone contexts.** `.tone-paper` / `.tone-ink` redefine `--fg`, `--fg-muted`,
+  `--fg-faint`, `--surface`, `--rule`, `--rule-soft` and `--wash` for a whole
+  subtree. Components never name a colour and never branch on tone — they use
+  `text-fg-muted`, `border-rule-soft`, `bg-surface` and let the nearest tone
+  ancestor decide. Adding a tone means adding one class, not a ternary.
+- **Contrast rule.** `--fg-muted` and `--fg-faint` are the only recessive text
+  values and both clear 4.5:1 on their own ground. Nothing on the site sets text
+  colour by opacity modifier — Tailwind silently drops values outside its
+  opacity scale (`/42`, `/48`, `/52`, `/58` emit no CSS at all).
+- **Accent.** `--accent` is sampled from the artwork and has exactly one job:
+  marking the selected archive entry. It is 12:1 on ink and 1.5:1 on paper, so
+  it is never text on a paper ground.
+- **Type ramp.** `display-xl`, `display-lg`, `display-md`, `lead`, `lead-sm`,
+  `body`, `kicker`. Display sizes clamp against `svh` as well as `vw` so a
+  full-height panel cannot outgrow its own box on a short laptop.
+- **Spacing.** `section-sm | section | section-lg | section-xl` for vertical
+  rhythm; the `.page-x` class owns the horizontal gutter everywhere.
+
+### Components
+
+Two button roles only: `.btn-primary` (bordered, inverts on hover) and
+`.btn-quiet` (underline slide). Both are `.btn`, which guarantees a 44px target.
+`.kicker` is the one small-caps label style. Nav hover animations (underline
+slide + letter-spacing) live in `app/globals.css` as `.nav-link` / `.nav-mark`.
+The site font is **Styrene A** loaded via `@font-face` from `/fonts/`.

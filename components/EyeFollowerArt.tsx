@@ -150,10 +150,17 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
       role="img"
       aria-label="Comiczeichnung eines Mannes, der in Stacheldraht festhängt"
     >
+      {/* Raw <img>: the three layers must align to the exact same pixel box, so
+          next/image's wrapper and srcset resizing are deliberately bypassed.
+          Intrinsic dimensions are declared to keep the hero free of layout shift. */}
       <img
         src="/mask_test/background_white_eye.png"
         alt=""
+        width={IMAGE_SIZE.width}
+        height={IMAGE_SIZE.height}
         draggable={false}
+        fetchPriority="high"
+        decoding="async"
         className="block h-auto w-full"
       />
       <img
@@ -172,7 +179,11 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
       <img
         src="/mask_test/vordergrund_mask.png"
         alt=""
+        width={IMAGE_SIZE.width}
+        height={IMAGE_SIZE.height}
         draggable={false}
+        fetchPriority="high"
+        decoding="async"
         className="pointer-events-none absolute inset-0 block h-auto w-full select-none"
       />
     </div>

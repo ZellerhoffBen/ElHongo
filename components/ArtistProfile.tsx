@@ -1,0 +1,236 @@
+"use client";
+
+import Image from "next/image";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  type ReactNode,
+} from "react";
+
+const path = [
+  {
+    year: "2024",
+    stage: "Gymnasium",
+    place: "LG Rämibühl, Zürich",
+  },
+  {
+    year: "2025",
+    stage: "Propädeutikum",
+    place: "ZHdK, Zürich",
+  },
+  {
+    year: "2027",
+    stage: "Illustration",
+    place: "Hamburg",
+  },
+];
+
+type ProfileContextValue = {
+  open: () => void;
+};
+
+const ProfileContext = createContext<ProfileContextValue | null>(null);
+
+/**
+ * The dialog is mounted once for the whole site so that any number of triggers
+ * can open it. Focus return is handled natively by <dialog>.
+ */
+export function ArtistProfileProvider({ children }: { children: ReactNode }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const open = useCallback(() => dialogRef.current?.showModal(), []);
+  const close = useCallback(() => dialogRef.current?.close(), []);
+  const value = useMemo(() => ({ open }), [open]);
+
+  return (
+    <ProfileContext.Provider value={value}>
+      {children}
+      <ArtistProfileDialog dialogRef={dialogRef} onClose={close} />
+    </ProfileContext.Provider>
+  );
+}
+
+function useProfile() {
+  const context = useContext(ProfileContext);
+  if (!context) {
+    throw new Error("Profile triggers must be rendered inside ArtistProfileProvider");
+  }
+  return context;
+}
+
+/** The wordmark trigger in the header. */
+export function ProfileTrigger({ className }: { className?: string }) {
+  const { open } = useProfile();
+
+  return (
+    <button
+      type="button"
+      aria-haspopup="dialog"
+      aria-controls="artist-profile"
+      className={[
+        "border-0 bg-transparent p-0 text-left font-bold uppercase tracking-[0.18em]",
+        className ?? "",
+      ].join(" ")}
+      onClick={open}
+    >
+      <span className="nav-underline">EL HONGO</span>
+    </button>
+  );
+}
+
+/**
+ * Discoverable second entry point. The wordmark alone reads as a logo, so the
+ * bio needs a control that looks like one.
+ */
+export function ProfileLink({ className }: { className?: string }) {
+  const { open } = useProfile();
+
+  return (
+    <button
+      type="button"
+      aria-haspopup="dialog"
+      aria-controls="artist-profile"
+      className={["btn btn-primary", className ?? ""].join(" ")}
+      onClick={open}
+    >
+      Profil <span aria-hidden="true">↗</span>
+    </button>
+  );
+}
+
+function ArtistProfileDialog({
+  dialogRef,
+  onClose,
+}: {
+  dialogRef: React.RefObject<HTMLDialogElement | null>;
+  onClose: () => void;
+}) {
+  return (
+    <dialog
+      ref={dialogRef}
+      id="artist-profile"
+      aria-labelledby="artist-profile-title"
+      aria-describedby="artist-profile-copy"
+      className="profile-dialog tone-paper text-ink"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto bg-paper sm:max-h-[calc(100dvh-3rem)]">
+        {/* Record header. The name lives in the identity plate below, so this
+            strip only says what kind of entry this is. */}
+        <div className="flex min-h-11 items-stretch justify-between border-b border-ink">
+          <div className="flex items-center px-5 sm:px-6">
+            <span className="kicker text-fg-faint">Profil</span>
+          </div>
+          <button
+            type="button"
+            aria-label="Profil schliessen"
+            className="group flex w-11 shrink-0 items-center justify-center border-l border-ink bg-transparent text-xl font-normal leading-none transition-colors hover:bg-ink hover:text-paper"
+            onClick={onClose}
+          >
+            <span
+              aria-hidden="true"
+              className="transition-transform duration-200 group-hover:rotate-90"
+            >
+              ×
+            </span>
+          </button>
+        </div>
+
+        <div className="grid md:grid-cols-[19rem_minmax(0,1fr)]">
+          {/*
+            Identity plate. Ink tone, so the dialog carries the same paper/ink
+            duality as the spreads and the selected register row. The portrait is
+            a mounted rectangular plate — the site has no circles anywhere else.
+          */}
+          <aside className="tone-ink flex items-stretch border-b border-ink bg-surface text-fg md:flex-col md:border-b-0 md:border-r">
+            <figure className="relative aspect-[4/5] w-24 shrink-0 overflow-hidden border-r border-rule-soft bg-wash sm:w-28 md:aspect-[4/3] md:w-full md:border-b md:border-r-0">
+              <Image
+                src="/jonas_portrait.png"
+                alt="Porträt von Jonas Aellig"
+                fill
+                priority
+                sizes="(min-width: 768px) 304px, 112px"
+                className="object-cover object-[center_26%]"
+              />
+            </figure>
+
+            <div className="flex min-w-0 flex-1 flex-col justify-between gap-5 p-5 sm:p-6 md:gap-8 md:p-7">
+              <div className="min-w-0">
+                <h2
+                  id="artist-profile-title"
+                  className="text-display-sm uppercase"
+                >
+                  <span className="block">Jonas</span>
+                  <span className="block">Aellig</span>
+                </h2>
+                <p className="kicker mt-4 text-fg-faint">aka EL HONGO</p>
+              </div>
+              <p className="kicker text-fg-faint">Zürich → Hamburg</p>
+            </div>
+          </aside>
+
+          {/* Both columns are anchored top and bottom: portrait/locator on the
+              ink side, note/path on the paper side. */}
+          <div className="flex flex-col p-5 [container-type:inline-size] sm:p-6 md:p-8">
+            {/* The auto margin sits here, not on the path section, so the
+                minimum gap survives when there is no slack to absorb. */}
+            <section className="md:mb-auto">
+              <p className="kicker text-fg-faint">Notiz zur Person</p>
+              <p
+                id="artist-profile-copy"
+                className="mt-4 max-w-[42ch] text-body-lg normal-case"
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Curabitur sit amet risus eget mauris posuere interdum. Nunc
+                vulputate, neque at viverra tincidunt, justo lacus sodales
+                risus, vitae malesuada libero lorem sed erat.
+              </p>
+            </section>
+
+            <section
+              aria-labelledby="artist-profile-path"
+              className="mt-7 border-t border-ink pt-5 sm:mt-section-sm md:pt-6"
+            >
+              <h3 id="artist-profile-path" className="kicker">
+                Weg
+              </h3>
+
+              <ol className="path-list mt-5">
+                {path.map((item, index) => {
+                  const isCurrent = index === path.length - 1;
+
+                  return (
+                    <li
+                      key={item.year}
+                      className="path-step relative pt-4 sm:pt-5"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={[
+                          "absolute -top-[3px] left-0 h-1.5 w-1.5",
+                          isCurrent ? "bg-accent" : "bg-fg",
+                        ].join(" ")}
+                      />
+                      <time className="block text-lg font-bold leading-none tracking-[-0.04em]">
+                        {item.year}
+                      </time>
+                      <p className="kicker mt-2 text-fg-faint">{item.stage}</p>
+                      <p className="mt-1.5 text-[11px] font-bold normal-case leading-tight">
+                        {item.place}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  );
+}

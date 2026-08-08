@@ -2,32 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArtistProfileDialog } from "@/components/ArtistProfileDialog";
+import { ProfileTrigger } from "@/components/ArtistProfile";
+import { isNavItemActive, navItems } from "@/lib/navigation";
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const archiveIsActive =
-    pathname.startsWith("/archive") || pathname.startsWith("/work");
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--site-header-offset)] items-center justify-between border-b border-black bg-[var(--paper)] px-5 text-[11px] font-bold uppercase leading-none tracking-[0.18em] text-black sm:px-7 sm:text-xs">
-      <ArtistProfileDialog />
+    <header className="page-x tone-paper fixed inset-x-0 top-0 z-50 flex h-[var(--site-header-offset)] items-stretch justify-between border-b border-ink bg-paper kicker text-ink">
+      {/* Hit areas fill the header height — the label is 11px, the target is 56px. */}
+      <ProfileTrigger className="nav-mark -ml-2 flex items-center px-2" />
 
-      <nav aria-label="Hauptnavigation" className="flex items-center gap-5 sm:gap-8">
-        <Link
-          href="/"
-          aria-current={!archiveIsActive ? "page" : undefined}
-          className="nav-link"
-        >
-          Atelier
-        </Link>
-        <Link
-          href="/archive"
-          aria-current={archiveIsActive ? "page" : undefined}
-          className="nav-link"
-        >
-          Archiv
-        </Link>
+      <nav aria-label="Hauptnavigation" className="flex items-stretch">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={isNavItemActive(item, pathname) ? "page" : undefined}
+            className="nav-link flex items-center px-3 last:-mr-2 sm:px-4"
+          >
+            <span className="nav-underline">{item.label}</span>
+          </Link>
+        ))}
       </nav>
     </header>
   );
