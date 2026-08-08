@@ -18,12 +18,56 @@
   font-display: swap;
 }
 
+/* ---------------------------------------------------------------------------
+   Tokens
+   Two ground colours, one accent sampled from the artwork (the FAT GUY /
+   misc-14 acid yellow), and a tone context that repaints a subtree. Components
+   never name a colour — they use --fg / --rule / --surface and let the nearest
+   `.tone-*` ancestor decide what those mean.
+--------------------------------------------------------------------------- */
 :root {
   --paper: #f7f6f1;
   --ink: #0a0a0a;
-  --site-header-offset: 52px;
+  /* Sampled from the artwork (FAT GUY / misc-14 acid yellow). One job only:
+     marking the currently selected archive entry. It is 12:1 on ink and 1.5:1
+     on paper — never use it for text on a paper ground. */
+  --accent: #f0c81e;
+
+  --site-header-offset: 56px;
+
+  /* Paper is the default tone.
+     --fg-muted / --fg-faint are the only recessive text values on the site and
+     both are pinned above 4.5:1 on their own ground (measured, not estimated). */
+  --surface: var(--paper);
+  --fg: var(--ink);
+  --fg-muted: rgb(10 10 10 / 0.72);
+  --fg-faint: rgb(10 10 10 / 0.62);
+  --rule: var(--ink);
+  --rule-soft: rgb(10 10 10 / 0.55);
+  --wash: rgb(10 10 10 / 0.06);
+
   background: var(--paper);
   color: var(--ink);
+}
+
+.tone-paper {
+  --surface: var(--paper);
+  --fg: var(--ink);
+  --fg-muted: rgb(10 10 10 / 0.72);
+  --fg-faint: rgb(10 10 10 / 0.62);
+  --rule: var(--ink);
+  --rule-soft: rgb(10 10 10 / 0.55);
+  --wash: rgb(10 10 10 / 0.06);
+}
+
+.tone-ink {
+  --surface: var(--ink);
+  --fg: #ffffff;
+  --fg-muted: rgb(255 255 255 / 0.78);
+  --fg-faint: rgb(255 255 255 / 0.66);
+  --rule: rgb(255 255 255 / 0.85);
+  --rule-soft: rgb(255 255 255 / 0.38);
+  --wash: rgb(255 255 255 / 0.1);
 }
 
 @media (min-width: 640px) {
@@ -89,12 +133,18 @@ a {
 a {
   color: inherit;
   text-decoration: none;
-  outline-offset: 4px;
+}
+
+/* One focus treatment, one offset, everywhere. */
+:root {
+  --focus-offset: 3px;
 }
 
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+[tabindex]:focus-visible {
   outline: 2px solid currentColor;
+  outline-offset: var(--focus-offset);
 }
 
 ::selection {
@@ -102,15 +152,151 @@ button:focus-visible {
   color: var(--paper);
 }
 
+@layer components {
+  /* The one horizontal rhythm the site has always had, now named. */
+  .page-x {
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .page-x {
+      padding-inline: 1.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-x {
+      padding-inline: 3rem;
+    }
+  }
+
+  /* Full-bleed escape hatch for rails that must touch the viewport edge. */
+  .page-x-bleed {
+    margin-inline: -1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .page-x-bleed {
+      margin-inline: -1.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-x-bleed {
+      margin-inline: 0;
+    }
+  }
+
+  /* Small caps label. Replaces the duplicated .work-kicker / .work-number. */
+  .kicker {
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Visible only when focused; sits above the fixed header. */
+  .skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 1rem;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transform: translateY(-150%);
+    transition: transform 160ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  /* ---- Button roles: exactly two ---------------------------------------- */
+
+  .btn {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Primary: bordered box that inverts. For "go somewhere" actions. */
+  .btn-primary {
+    border: 1px solid currentColor;
+    padding: 0.75rem 1rem;
+    transition: background-color 150ms linear, color 150ms linear;
+  }
+
+  .btn-primary:hover {
+    background: var(--fg);
+    color: var(--surface);
+  }
+
+  /* Quiet: underline slide. For in-flow, secondary moves. */
+  .btn-quiet {
+    position: relative;
+    padding: 0.75rem 0;
+    color: var(--fg-muted);
+    transition: color 150ms linear;
+  }
+
+  .btn-quiet:hover {
+    color: var(--fg);
+  }
+
+  .btn-quiet::after {
+    position: absolute;
+    right: 0;
+    bottom: 0.55rem;
+    left: 0;
+    height: 1px;
+    content: "";
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 180ms ease;
+  }
+
+  .btn-quiet:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* Navigation: underline slide + tracking expansion.
+   The rule lives on .nav-underline (wrapping the label), not on the link, so it
+   measures the text rather than the full-height hit area — otherwise adjacent
+   links' underlines meet and read as one continuous line. */
 .nav-mark,
 .nav-link {
-  position: relative;
   text-decoration: none;
   transition: letter-spacing 180ms ease;
 }
 
-.nav-mark::after,
-.nav-link::after {
+.nav-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-underline::after {
   position: absolute;
   right: 0;
   bottom: -0.55em;
@@ -123,10 +309,10 @@ button:focus-visible {
   transition: transform 180ms ease, bottom 180ms ease;
 }
 
-.nav-mark:hover::after,
-.nav-link:hover::after,
-.nav-mark[aria-current]::after,
-.nav-link[aria-current]::after {
+.nav-mark:hover .nav-underline::after,
+.nav-link:hover .nav-underline::after,
+.nav-mark[aria-current] .nav-underline::after,
+.nav-link[aria-current] .nav-underline::after {
   bottom: -0.35em;
   transform: scaleX(1);
   transform-origin: left;
@@ -135,6 +321,98 @@ button:focus-visible {
 .nav-mark:hover,
 .nav-link:hover {
   letter-spacing: 0.24em;
+}
+
+/* Horizontal artwork rail (mobile + tablet). Hidden scrollbar, snap per panel. */
+.studio-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.studio-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Archive preview: crossfade between artworks rather than a hard cut. */
+.preview-art {
+  animation: preview-fade 260ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@keyframes preview-fade {
+  from {
+    opacity: 0;
+    transform: scale(1.012);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Register row: accent marker for the selected entry, wash for the hovered one. */
+.register-row {
+  position: relative;
+  transition: background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    color 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.register-row::before {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 4px;
+  content: "";
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.register-row:hover::before,
+.register-row:focus-visible::before,
+.register-row[aria-pressed="true"]::before {
+  transform: scaleX(1);
+}
+
+/* Weg: goes three-up only when its own column is wide enough, not when the
+   viewport is — inside the dialog the column is far narrower than the screen,
+   and the tracked labels collide well before a viewport breakpoint would fire. */
+.path-list {
+  display: grid;
+  gap: 1rem;
+}
+
+@container (min-width: 27rem) {
+  .path-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Weg: each step carries its own rule segment, drawn a fraction off true so the
+   path reads as marked by hand rather than plotted. */
+.path-step::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: var(--rule-soft);
+  transform-origin: left center;
+}
+
+.path-step:nth-child(1)::before {
+  transform: rotate(-0.4deg);
+}
+
+.path-step:nth-child(2)::before {
+  transform: rotate(0.28deg);
+}
+
+.path-step:nth-child(3)::before {
+  transform: rotate(-0.16deg);
 }
 
 .profile-dialog {
@@ -159,41 +437,6 @@ button:focus-visible {
     width: min(56rem, calc(100% - 3rem));
     max-height: calc(100dvh - 3rem);
   }
-}
-
-.work-number,
-.work-kicker {
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.work-open-link {
-  display: inline-flex;
-  width: fit-content;
-  min-height: 42px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid currentColor;
-  padding: 0.75rem 0.9rem;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  transition: background-color 150ms linear, color 150ms linear;
-}
-
-.work-open-link:hover {
-  background: var(--ink);
-  color: white;
-}
-
-.bg-black .work-open-link:hover {
-  background: white;
-  color: var(--ink);
 }
 
 @media (max-width: 639px) {
