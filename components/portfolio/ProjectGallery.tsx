@@ -1,8 +1,19 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
+import { ArtworkLightbox } from "@/components/portfolio/ArtworkLightbox";
+import { focusOpener } from "@/components/useReturnFocus";
 import type { WorkImage, WorkProject } from "@/lib/workProjects";
 
 type ProjectGalleryProps = {
   project: WorkProject;
+  /**
+   * True only where the gallery is what the route is for. `/archive` renders
+   * the register with the first project below it, and eagerly fetching that
+   * lead plate cost the register 112 KiB of image nobody had scrolled to.
+   */
+  eagerLead?: boolean;
 };
 
 function Artwork({
@@ -10,34 +21,64 @@ function Artwork({
   sizes,
   index,
   total,
+  onOpen,
+  eager = false,
 }: {
   image: WorkImage;
   sizes: string;
   index: number;
   total: number;
+  onOpen: () => void;
+  /** The lead plate is what a `/archive/<slug>` link renders first. */
+  eager?: boolean;
 }) {
+  const plate = `Bild ${String(index).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+
   return (
     <figure className="relative">
-      <Image
-        src={image.src}
-        alt={image.alt}
-        width={image.width}
-        height={image.height}
-        sizes={sizes}
-        className="h-auto w-full"
-      />
+      {/*
+        The plate is the control. A drawing this dense is unreadable at column
+        width, so the whole image opens the enlarged view rather than hanging a
+        magnifier icon off the corner.
+      */}
+      <button
+        type="button"
+        onClick={(event) => {
+          // Safari does not focus a button on click, and the viewer has to know
+          // where to put the caret back.
+          focusOpener(event);
+          onOpen();
+        }}
+        aria-label={`${image.alt} — vergrössern (${plate})`}
+        className="group block w-full cursor-zoom-in [--focus-offset:4px]"
+      >
+        <Image
+          src={image.src}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
+          sizes={sizes}
+          priority={eager}
+          className="h-auto w-full"
+        />
+      </button>
+
       {/* Catalogue numbering: the register promises N Bilder, the plates confirm it. */}
       <figcaption className="kicker mt-3 flex items-baseline justify-between gap-4 text-fg-faint">
-        <span>
-          Bild {String(index).padStart(2, "0")} / {String(total).padStart(2, "0")}
+        <span>{plate}</span>
+        <span className="flex items-baseline gap-4">
+          {image.documentation ? <span>Dokumentation</span> : null}
+          <span aria-hidden="true" className="opacity-0 transition-opacity group-focus-visible:opacity-100 sm:opacity-100">
+            Vergrössern ↗
+          </span>
         </span>
-        {image.documentation ? <span>Dokumentation</span> : null}
       </figcaption>
     </figure>
   );
 }
 
-export function ProjectGallery({ project }: ProjectGalleryProps) {
+export function ProjectGallery({ project, eagerLead = false }: ProjectGalleryProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [lead, ...rest] = project.images;
   const total = project.images.length;
   const pairs: WorkImage[][] = [];
@@ -65,6 +106,8 @@ export function ProjectGallery({ project }: ProjectGalleryProps) {
             sizes="(min-width: 1440px) 1380px, 94vw"
             index={1}
             total={total}
+            onOpen={() => setOpenIndex(0)}
+            eager={eagerLead}
           />
         </div>
       </div>
@@ -87,33 +130,45 @@ export function ProjectGallery({ project }: ProjectGalleryProps) {
                   : "md:[&>*:last-child]:translate-y-20",
               ].join(" ")}
             >
-              {pair.map((item, itemIndex) => (
-                <div
-                  key={item.src}
-                  className={
-                    solo
-                      ? pairIndex % 2 === 0
-                        ? "max-w-[920px]"
-                        : "ml-auto max-w-[920px]"
-                      : ""
-                  }
-                >
-                  <Artwork
-                    image={item}
-                    sizes={
+              {pair.map((item, itemIndex) => {
+                const index = 2 + pairIndex * 2 + itemIndex;
+
+                return (
+                  <div
+                    key={item.src}
+                    className={
                       solo
-                        ? "(min-width: 1024px) 920px, 92vw"
-                        : "(min-width: 768px) 46vw, 92vw"
+                        ? pairIndex % 2 === 0
+                          ? "max-w-[920px]"
+                          : "ml-auto max-w-[920px]"
+                        : ""
                     }
-                    index={2 + pairIndex * 2 + itemIndex}
-                    total={total}
-                  />
-                </div>
-              ))}
+                  >
+                    <Artwork
+                      image={item}
+                      sizes={
+                        solo
+                          ? "(min-width: 1024px) 920px, 92vw"
+                          : "(min-width: 768px) 46vw, 92vw"
+                      }
+                      index={index}
+                      total={total}
+                      onOpen={() => setOpenIndex(index - 1)}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </section>
         );
       })}
+
+      <ArtworkLightbox
+        project={project}
+        openIndex={openIndex}
+        onNavigate={setOpenIndex}
+        onClose={() => setOpenIndex(null)}
+      />
     </div>
   );
 }
