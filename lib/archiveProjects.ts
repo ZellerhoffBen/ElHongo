@@ -10,6 +10,7 @@ const image = (
 const archiveCollections: WorkProject[] = [
   {
     id: "wimmelbilder",
+    slug: "wimmelbilder",
     number: "04",
     title: "WIMMELBILDER",
     medium: "Tinte / Digital",
@@ -29,6 +30,7 @@ const archiveCollections: WorkProject[] = [
   },
   {
     id: "figuren",
+    slug: "figuren",
     number: "05",
     title: "FIGUREN",
     medium: "Zeichnung / Farbe",
@@ -60,6 +62,7 @@ const archiveCollections: WorkProject[] = [
   },
   {
     id: "beobachtungen",
+    slug: "beobachtungen",
     number: "06",
     title: "BEOBACHTUNGEN",
     medium: "Stift / Dokumentation",
@@ -78,5 +81,35 @@ export const archiveProjects: WorkProject[] = [
   ...archiveCollections,
 ];
 
-export const findArchiveProject = (id: string): WorkProject | undefined =>
-  archiveProjects.find((project) => project.id === id);
+/** The register's first entry — the archive's own landing state. */
+export const defaultArchiveProject = archiveProjects[0];
+
+export const findArchiveProject = (slug: string): WorkProject | undefined =>
+  archiveProjects.find((project) => project.slug === slug);
+
+/**
+ * Resolves the pre-route identifiers — `/archive#fatguy` and `/work/fatguy` —
+ * onto today's canonical slug, so old links and shares keep landing on the
+ * project they named.
+ */
+export const resolveLegacyProjectId = (id: string): WorkProject | undefined => {
+  const decoded = id.trim().toLowerCase();
+  return archiveProjects.find(
+    (project) => project.id === decoded || project.slug === decoded,
+  );
+};
+
+/** Register order is the browse order, so next/previous follow it. */
+export const getProjectNeighbours = (slug: string) => {
+  const index = archiveProjects.findIndex((project) => project.slug === slug);
+  if (index === -1) return { previous: undefined, next: undefined };
+
+  return {
+    previous:
+      archiveProjects[(index - 1 + archiveProjects.length) % archiveProjects.length],
+    next: archiveProjects[(index + 1) % archiveProjects.length],
+  };
+};
+
+export const getProjectCover = (project: WorkProject) =>
+  project.images[project.previewImageIndex ?? 0] ?? project.images[0];
