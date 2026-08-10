@@ -6,6 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "build:hero": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/build-hero-assets.mjs",
+    "build:brand": "python3 scripts/build-brand-assets.py",
+    "build:fonts": "python3 scripts/build-fonts.py",
+    "check:artwork": "python3 scripts/artwork-contact-sheet.py",
     "test": "vitest run lib",
     "test:e2e": "playwright test"
   },
