@@ -80,8 +80,12 @@ const config: Config = {
           { lineHeight: "1.45", letterSpacing: "-0.012em", fontWeight: "400" },
         ],
         kicker: [
-          "0.625rem",
-          { lineHeight: "1.2", letterSpacing: "0.18em", fontWeight: "700" },
+          "var(--type-utility)",
+          {
+            lineHeight: "1.25",
+            letterSpacing: "var(--track-utility)",
+            fontWeight: "700",
+          },
         ],
       },
       transitionTimingFunction: {

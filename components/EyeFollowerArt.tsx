@@ -1,11 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { heroAssets } from "@/lib/heroAssets.generated";
 import {
-  getClampedEyeOffset,
-  smoothPoint,
-  type Point,
-} from "@/lib/maskEye";
+  ARTWORK_SIZE,
+  ARTWORK_SIZES,
+  EYE_CENTER,
+  EYE_DAMPING,
+  EYE_SIZE,
+  MAX_EYE_OFFSET,
+  SOCKET_WINDOW,
+  socketWindowStyle,
+} from "@/lib/heroArtwork";
+import { getClampedEyeOffset, smoothPoint, type Point } from "@/lib/maskEye";
 import {
   EYE_POINTER_DELAY_MS,
   EYE_POINTER_SMOOTHING,
@@ -14,37 +21,23 @@ import {
   type TimedPoint,
 } from "@/lib/eyeMotion";
 
-const IMAGE_SIZE = {
-  width: 2038,
-  height: 2000,
+const EYE_SIZE_PERCENT = {
+  width: `${(EYE_SIZE.width / ARTWORK_SIZE.width) * 100}%`,
+  height: `${(EYE_SIZE.height / ARTWORK_SIZE.height) * 100}%`,
 };
-
-const EYE_CENTER = {
-  xPercent: 54.75,
-  yPercent: 22.85,
-};
-
-const EYE_SIZE = {
-  widthPercent: (43 / IMAGE_SIZE.width) * 100,
-  heightPercent: (30 / IMAGE_SIZE.height) * 100,
-};
-
-const MAX_EYE_OFFSET = {
-  left: 10.64,
-  right: 35.7,
-  up: 4.725,
-  down: 16.85,
-};
-
-const TOP_LEFT_DAMPING = 0.8;
-const LEFT_AND_TOP_SECTOR_DAMPING = 0.8;
-const RIGHT_DIAGONAL_PULL = 2.2;
-const BOTTOM_LEFT_HORIZONTAL_PULL = 1.35;
 
 type EyeFollowerArtProps = {
   className?: string;
 };
 
+/**
+ * The three-layer hero artwork.
+ *
+ * Every layer is `aria-hidden` — the composition is one picture, not three, so
+ * the accessible description belongs to the `<figure>` that wraps this
+ * component (see `app/page.tsx`). Rendering it without a caption leaves the
+ * artwork unnamed.
+ */
 export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [eyeOffset, setEyeOffset] = useState<Point>({ x: 0, y: 0 });
@@ -67,7 +60,7 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
 
       if (frame && delayedPointer) {
         const bounds = frame.getBoundingClientRect();
-        const scale = bounds.width / IMAGE_SIZE.width;
+        const scale = bounds.width / ARTWORK_SIZE.width;
         const eyeCenter = {
           x: bounds.left + bounds.width * (EYE_CENTER.xPercent / 100),
           y: bounds.top + bounds.height * (EYE_CENTER.yPercent / 100),
@@ -89,10 +82,10 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
             maxRight: MAX_EYE_OFFSET.right * scale,
             maxUp: MAX_EYE_OFFSET.up * scale,
             maxDown: MAX_EYE_OFFSET.down * scale,
-            topLeftDamping: TOP_LEFT_DAMPING,
-            leftAndTopSectorDamping: LEFT_AND_TOP_SECTOR_DAMPING,
-            rightDiagonalPull: RIGHT_DIAGONAL_PULL,
-            bottomLeftHorizontalPull: BOTTOM_LEFT_HORIZONTAL_PULL,
+            topLeftDamping: EYE_DAMPING.topLeft,
+            leftAndTopSectorDamping: EYE_DAMPING.leftAndTopSector,
+            rightDiagonalPull: EYE_DAMPING.rightDiagonalPull,
+            bottomLeftHorizontalPull: EYE_DAMPING.bottomLeftHorizontalPull,
             activationDistance: bounds.width * 0.2,
           },
         );
@@ -143,48 +136,63 @@ export function EyeFollowerArt({ className }: EyeFollowerArtProps) {
   return (
     <div
       ref={frameRef}
-      className={[
-        "relative select-none",
-        className ?? "w-[min(92vw,940px)]",
-      ].join(" ")}
-      role="img"
-      aria-label="Comiczeichnung eines Mannes, der in Stacheldraht festhängt"
+      className={["relative select-none", className ?? "w-[min(92vw,940px)]"].join(" ")}
     >
-      {/* Raw <img>: the three layers must align to the exact same pixel box, so
-          next/image's wrapper and srcset resizing are deliberately bypassed.
-          Intrinsic dimensions are declared to keep the hero free of layout shift. */}
+      {/*
+        Raw <picture>: the layers must share one pixel box, so next/image's
+        wrapper is bypassed and the ladder is declared by hand. Every rung has
+        the artwork's aspect ratio, so which one the browser picks cannot move
+        the socket relative to the drawing — the mask and pupil are positioned
+        in percentages of this frame, not of any particular file.
+      */}
+      <picture>
+        <source type="image/avif" srcSet={heroAssets.avifSrcSet} sizes={ARTWORK_SIZES} />
+        <source type="image/webp" srcSet={heroAssets.webpSrcSet} sizes={ARTWORK_SIZES} />
+        <img
+          src={heroAssets.fallback}
+          alt=""
+          aria-hidden="true"
+          width={ARTWORK_SIZE.width}
+          height={ARTWORK_SIZE.height}
+          draggable={false}
+          fetchPriority="high"
+          decoding="async"
+          className="block h-auto w-full"
+        />
+      </picture>
+
       <img
-        src="/mask_test/background_white_eye.png"
+        src={heroAssets.pupil}
         alt=""
-        width={IMAGE_SIZE.width}
-        height={IMAGE_SIZE.height}
+        aria-hidden="true"
+        width={EYE_SIZE.width}
+        height={EYE_SIZE.height}
         draggable={false}
-        fetchPriority="high"
-        decoding="async"
-        className="block h-auto w-full"
-      />
-      <img
-        src="/mask_test/only_eye.png"
-        alt=""
-        draggable={false}
-        className="pointer-events-none absolute block select-none"
+        className="pointer-events-none absolute block max-w-none select-none"
         style={{
           left: `calc(${EYE_CENTER.xPercent}% + ${eyeOffset.x}px)`,
           top: `calc(${EYE_CENTER.yPercent}% + ${eyeOffset.y}px)`,
-          width: `${EYE_SIZE.widthPercent}%`,
-          height: `${EYE_SIZE.heightPercent}%`,
+          width: EYE_SIZE_PERCENT.width,
+          height: EYE_SIZE_PERCENT.height,
           transform: "translate(-50%, -50%)",
         }}
       />
+
+      {/*
+        The socket mask is the only surviving piece of the second full-size
+        layer: a 160x96 crop that clips the pupil back to the drawn eye. Outside
+        its transparent hole it repaints the artwork underneath pixel for pixel,
+        so the seam is invisible.
+      */}
       <img
-        src="/mask_test/vordergrund_mask.png"
+        src={heroAssets.socketMask}
         alt=""
-        width={IMAGE_SIZE.width}
-        height={IMAGE_SIZE.height}
+        aria-hidden="true"
+        width={SOCKET_WINDOW.width}
+        height={SOCKET_WINDOW.height}
         draggable={false}
-        fetchPriority="high"
-        decoding="async"
-        className="pointer-events-none absolute inset-0 block h-auto w-full select-none"
+        className="pointer-events-none absolute block max-w-none select-none"
+        style={socketWindowStyle}
       />
     </div>
   );
