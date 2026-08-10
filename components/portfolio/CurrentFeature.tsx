@@ -96,9 +96,15 @@ export function CurrentFeature({ feature }: CurrentFeatureProps) {
                 >
                   {detail.label}
                 </dt>
+                {/*
+                  German compounds — "Kunsthochschulzwischenpräsentationsraum" —
+                  have no break opportunity, and in the wall-label row this sits
+                  in a flex box that would otherwise refuse to shrink below its
+                  longest word and push the value out of the list.
+                */}
                 <dd
                   className={[
-                    "text-[11px] font-bold leading-[1.3] sm:text-xs",
+                    "min-w-0 text-[11px] font-bold leading-[1.3] [overflow-wrap:anywhere] sm:text-xs",
                     asWallLabel ? "" : "mt-2",
                   ].join(" ")}
                 >
