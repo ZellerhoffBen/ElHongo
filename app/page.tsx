@@ -96,13 +96,19 @@ export default function Home() {
           className="home-snap-panel home-snap-intro scroll-mt-[var(--site-header-offset)] border-b border-ink lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.18fr)] lg:overflow-hidden"
         >
           {/*
-            An explicit height, not a minimum: the artwork overscales to 130% of
-            its column and is ~1.28x the viewport width tall, so `min-h` was
-            never the binding constraint and the hero consumed the whole screen
-            on a phone regardless of what it was set to.
+            Below `lg` the artwork sets its own height and is never cropped: at
+            130% of the column it stood 549px tall inside a 340px frame, so a
+            phone lost 105px off the top and 104px off the bottom — the drawing
+            arrived headless, without the wire above it or the shoe below.
+
+            Full width instead of a fixed height is what keeps the name lockup
+            on the first screen: the artwork is near-square, so its height is
+            simply the viewport width, which no phone in the matrix turns into
+            a full screen. The 130% overscale stays from `lg`, where the column
+            is fixed to the viewport and the bleed is the point.
           */}
-          <figure className="flex h-[46svh] items-center justify-center overflow-hidden border-b border-ink bg-white sm:h-[58svh] lg:h-auto lg:min-h-0 lg:border-b-0 lg:border-r">
-            <EyeFollowerArt className="w-[130%] max-w-none shrink-0" />
+          <figure className="flex items-center justify-center overflow-hidden border-b border-ink bg-white lg:h-auto lg:min-h-0 lg:border-b-0 lg:border-r">
+            <EyeFollowerArt className="w-full max-w-none shrink-0 lg:w-[130%]" />
             {/* The layers are aria-hidden; this is the composition's one name. */}
             <figcaption className="sr-only">
               Comiczeichnung von EL HONGO: ein Mann, der in Stacheldraht
