@@ -96,19 +96,26 @@ export default function Home() {
           className="home-snap-panel home-snap-intro scroll-mt-[var(--site-header-offset)] border-b border-ink lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.18fr)] lg:overflow-hidden"
         >
           {/*
-            Below `lg` the artwork sets its own height and is never cropped: at
-            130% of the column it stood 549px tall inside a 340px frame, so a
-            phone lost 105px off the top and 104px off the bottom — the drawing
-            arrived headless, without the wire above it or the shoe below.
+            Below `lg` the frame is cropped horizontally and never vertically:
+            the wire runs off both edges, the body keeps its air above and
+            below. A fixed height did the opposite — it cut 105px off the top
+            and 104px off the bottom on a phone, beheading the drawing.
 
-            Full width instead of a fixed height is what keeps the name lockup
-            on the first screen: the artwork is near-square, so its height is
-            simply the viewport width, which no phone in the matrix turns into
-            a full screen. The 130% overscale stays from `lg`, where the column
-            is fixed to the viewport and the bleed is the point.
+            The two numbers are measured off the master, not guessed. Its ink
+            spans x 176..2035 of 2038, so 112% is what pushes the drawn wire
+            past both edges. That ink is also not centred — 176px of white on
+            the left against 2px on the right — so a plain overscale would
+            crop the right-hand wire while still showing white on the left.
+            The 4.2% shift is that 86px offset, which re-centres the drawing
+            rather than the file it happens to sit in.
+
+            Height stays free, so it follows the width: near-square artwork on
+            a phone is about a viewport-width tall, which leaves the name
+            lockup on the first screen. From `lg` the column is fixed to the
+            viewport, the bleed is bigger and symmetric cropping is fine.
           */}
           <figure className="flex items-center justify-center overflow-hidden border-b border-ink bg-white lg:h-auto lg:min-h-0 lg:border-b-0 lg:border-r">
-            <EyeFollowerArt className="w-full max-w-none shrink-0 lg:w-[130%]" />
+            <EyeFollowerArt className="w-[112%] max-w-none shrink-0 -translate-x-[4.2%] lg:w-[130%] lg:translate-x-0" />
             {/* The layers are aria-hidden; this is the composition's one name. */}
             <figcaption className="sr-only">
               Comiczeichnung von EL HONGO: ein Mann, der in Stacheldraht
