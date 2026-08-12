@@ -9,6 +9,7 @@ import {
   useRef,
   type ReactNode,
 } from "react";
+import { focusOpener, useReturnFocus } from "@/components/useReturnFocus";
 
 const path = [
   {
@@ -36,13 +37,23 @@ const ProfileContext = createContext<ProfileContextValue | null>(null);
 
 /**
  * The dialog is mounted once for the whole site so that any number of triggers
- * can open it. Focus return is handled natively by <dialog>.
+ * can open it. `showModal` supplies the focus trap and the inert background;
+ * focus return is handled by `useReturnFocus`, because WebKit does not.
  */
 export function ArtistProfileProvider({ children }: { children: ReactNode }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { remember, restore } = useReturnFocus();
 
-  const open = useCallback(() => dialogRef.current?.showModal(), []);
-  const close = useCallback(() => dialogRef.current?.close(), []);
+  const open = useCallback(() => {
+    remember();
+    dialogRef.current?.showModal();
+  }, [remember]);
+
+  const close = useCallback(() => {
+    dialogRef.current?.close();
+    restore();
+  }, [restore]);
+
   const value = useMemo(() => ({ open }), [open]);
 
   return (
@@ -61,8 +72,14 @@ function useProfile() {
   return context;
 }
 
-/** The wordmark trigger in the header. */
-export function ProfileTrigger({ className }: { className?: string }) {
+/**
+ * The named header control.
+ *
+ * The wordmark used to do this job, which meant the one element every visitor
+ * expects to be Home was an About button instead. The action now says what it
+ * is and sits with the other navigation.
+ */
+export function ProfileNavTrigger({ className }: { className?: string }) {
   const { open } = useProfile();
 
   return (
@@ -70,20 +87,19 @@ export function ProfileTrigger({ className }: { className?: string }) {
       type="button"
       aria-haspopup="dialog"
       aria-controls="artist-profile"
-      className={[
-        "border-0 bg-transparent p-0 text-left font-bold uppercase tracking-[0.18em]",
-        className ?? "",
-      ].join(" ")}
-      onClick={open}
+      className={["border-0 bg-transparent", className ?? ""].join(" ")}
+      onClick={(event) => {
+        focusOpener(event);
+        open();
+      }}
     >
-      <span className="nav-underline">EL HONGO</span>
+      <span className="nav-underline">Profil</span>
     </button>
   );
 }
 
 /**
- * Discoverable second entry point. The wordmark alone reads as a logo, so the
- * bio needs a control that looks like one.
+ * Discoverable second entry point, in the flow of the homepage identity block.
  */
 export function ProfileLink({ className }: { className?: string }) {
   const { open } = useProfile();
@@ -94,7 +110,10 @@ export function ProfileLink({ className }: { className?: string }) {
       aria-haspopup="dialog"
       aria-controls="artist-profile"
       className={["btn btn-primary", className ?? ""].join(" ")}
-      onClick={open}
+      onClick={(event) => {
+        focusOpener(event);
+        open();
+      }}
     >
       Profil <span aria-hidden="true">↗</span>
     </button>
@@ -117,6 +136,15 @@ function ArtistProfileDialog({
       className="profile-dialog tone-paper text-ink"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== "Escape") return;
+        // Native <dialog> already treats Escape as a close request, but which
+        // engine honours it — and whether a synthetic key event counts — varies.
+        // Cancelling the default and closing here gives every browser, and every
+        // test harness, exactly one deterministic path.
+        event.preventDefault();
+        onClose();
       }}
     >
       <div className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto bg-paper sm:max-h-[calc(100dvh-3rem)]">

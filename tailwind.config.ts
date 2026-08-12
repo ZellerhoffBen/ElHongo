@@ -79,22 +79,9 @@ const config: Config = {
           "clamp(1rem, 1.3vw, 1.125rem)",
           { lineHeight: "1.45", letterSpacing: "-0.012em", fontWeight: "400" },
         ],
-        kicker: [
-          "0.625rem",
-          { lineHeight: "1.2", letterSpacing: "0.18em", fontWeight: "700" },
-        ],
       },
       transitionTimingFunction: {
         edge: "cubic-bezier(0.2, 0, 0, 1)",
-      },
-      keyframes: {
-        "rise-in": {
-          from: { opacity: "0", transform: "translate3d(0, 0.75rem, 0)" },
-          to: { opacity: "1", transform: "translate3d(0, 0, 0)" },
-        },
-      },
-      animation: {
-        "rise-in": "rise-in 320ms cubic-bezier(0.2, 0, 0, 1) both",
       },
     },
   },

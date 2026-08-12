@@ -7,7 +7,10 @@ export type WorkImage = {
 };
 
 export type WorkProject = {
+  /** Stable data key. Also the legacy `/archive#<id>` fragment. */
   id: string;
+  /** URL segment under `/archive/`. The canonical identity of a project. */
+  slug: string;
   number: string;
   title: string;
   year?: string;
@@ -19,7 +22,8 @@ export type WorkProject = {
   images: WorkImage[];
 };
 
-const image = (
+/** Shared by both project lists, so a plate is described the same way in each. */
+export const image = (
   src: string,
   width: number,
   height: number,
@@ -30,6 +34,7 @@ const image = (
 export const workProjects: WorkProject[] = [
   {
     id: "sine2000",
+    slug: "sine-2000",
     number: "01",
     title: "SINE 2000",
     year: "2000",
@@ -51,6 +56,7 @@ export const workProjects: WorkProject[] = [
   },
   {
     id: "fatguy",
+    slug: "fat-guy",
     number: "02",
     title: "FAT GUY",
     medium: "Zeichnung / Farbe",
@@ -65,6 +71,7 @@ export const workProjects: WorkProject[] = [
   },
   {
     id: "trommel",
+    slug: "trommel",
     number: "03",
     title: "TROMMEL",
     medium: "Acryl auf Trommelfell",
