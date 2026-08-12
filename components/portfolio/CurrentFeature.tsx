@@ -47,7 +47,7 @@ export function CurrentFeature({ feature }: CurrentFeatureProps) {
     >
       <div
         className={[
-          "page-x grid grid-rows-[auto_1fr] py-section [container-type:inline-size] sm:py-section-lg lg:min-h-0 lg:py-section-lg",
+          "page-x grid grid-rows-[auto_1fr] pt-section pb-section-xs [container-type:inline-size] sm:pt-section-lg lg:min-h-0 lg:py-section-lg",
           mediaIsLeft ? "lg:order-2" : "lg:order-1",
         ].join(" ")}
       >
@@ -59,7 +59,17 @@ export function CurrentFeature({ feature }: CurrentFeatureProps) {
           <p className="kicker text-fg-faint">{feature.status}</p>
         </header>
 
-        <div className="grid content-center py-section-lg lg:py-section">
+        {/*
+          No bottom padding below `lg`. Stacked, this padding and the column's
+          own put 136px between the description and the plate it describes —
+          the text read as a separate section rather than as the label for the
+          picture underneath it. The column's `pb-section-xs` is now the whole
+          gap. The top padding stays, so the block sits far closer to its image
+          than to the header above it, which is the grouping the eye should
+          read. From `lg` the media moves beside the text and the symmetric
+          padding is what centres it in the 78svh row.
+        */}
+        <div className="grid content-center pt-section-lg lg:py-section">
           <h2 className="max-w-[11ch] text-display-md uppercase [overflow-wrap:anywhere]">
             {feature.title}
           </h2>

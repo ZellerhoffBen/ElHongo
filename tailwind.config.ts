@@ -30,6 +30,10 @@ const config: Config = {
       },
       spacing: {
         // Vertical section rhythm. Replaces the ad-hoc py-4…py-28 sprawl.
+        // The scale steps by roughly 1.4x; `xs` is the bonding step, for the
+        // gap between an element and the thing it belongs to rather than
+        // between one section and the next.
+        "section-xs": "1.75rem",
         "section-sm": "2.5rem",
         section: "3.5rem",
         "section-lg": "5rem",

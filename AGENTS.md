@@ -320,8 +320,12 @@ size is an alias over a custom property defined in `app/globals.css`:
   texture rather than text on dense screens. The letterforms grew; the gaps
   between them did not. `--track-utility-open` is the nav's hover expansion,
   scaled with the base instead of pinned.
-- **Spacing.** `section-sm | section | section-lg | section-xl` for vertical
-  rhythm; the `.page-x` class owns the horizontal gutter everywhere.
+- **Spacing.** `section-xs | section-sm | section | section-lg | section-xl`
+  for vertical rhythm; the `.page-x` class owns the horizontal gutter
+  everywhere. `section-xs` is the bonding step — the gap between an element and
+  the thing it belongs to, not between one section and the next. It is what
+  keeps a stacked caption attached to its plate instead of reading as its own
+  section.
 
 ### Components
 
