@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { ProfileLink } from "@/components/ArtistProfile";
-import { EyeFollowerArt } from "@/components/EyeFollowerArt";
-import { SiteFooter } from "@/components/SiteFooter";
+import { ProfileLink } from "@/components/layout/ArtistProfile";
+import { EyeFollowerArt } from "@/components/hero/EyeFollowerArt";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { FeaturedRail } from "@/components/portfolio/FeaturedRail";
 import {
   CurrentFeature,

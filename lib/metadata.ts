@@ -5,7 +5,7 @@ import type { WorkProject } from "./workProjects";
 const OG_SIZE = { width: 1200, height: 630 };
 
 /** Every route's social image lives at a path derived from its own slug. */
-export const ogImagePath = (slug?: string) =>
+const ogImagePath = (slug?: string) =>
   slug ? `/og/${slug}.png` : "/og/default.png";
 
 /**
@@ -46,7 +46,7 @@ export function buildMetadata({
   };
 }
 
-export const projectDescription = (project: WorkProject) =>
+const projectDescription = (project: WorkProject) =>
   `${project.title} — ${project.kind}, ${project.medium}. ${project.images.length} Blätter im Archiv von ${siteInfo.alias}.`;
 
 export function buildProjectMetadata(project: WorkProject): Metadata {

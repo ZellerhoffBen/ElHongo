@@ -1,11 +1,4 @@
-import { workProjects, type WorkImage, type WorkProject } from "./workProjects";
-
-const image = (
-  src: string,
-  width: number,
-  height: number,
-  alt: string,
-): WorkImage => ({ src, width, height, alt });
+import { image, workProjects, type WorkProject } from "./workProjects";
 
 const archiveCollections: WorkProject[] = [
   {
@@ -80,9 +73,6 @@ export const archiveProjects: WorkProject[] = [
   ...workProjects,
   ...archiveCollections,
 ];
-
-/** The register's first entry — the archive's own landing state. */
-export const defaultArchiveProject = archiveProjects[0];
 
 export const findArchiveProject = (slug: string): WorkProject | undefined =>
   archiveProjects.find((project) => project.slug === slug);

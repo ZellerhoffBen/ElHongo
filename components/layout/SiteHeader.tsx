@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ProfileNavTrigger } from "@/components/ArtistProfile";
+import { ProfileNavTrigger } from "@/components/layout/ArtistProfile";
 import { isNavItemActive, navItems } from "@/lib/navigation";
 
 export function SiteHeader() {

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { ArtistProfileProvider } from "@/components/ArtistProfile";
-import { SiteHeader } from "@/components/SiteHeader";
+import { ArtistProfileProvider } from "@/components/layout/ArtistProfile";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { buildMetadata } from "@/lib/metadata";
 import { siteInfo } from "@/lib/siteInfo";
 import "./globals.css";

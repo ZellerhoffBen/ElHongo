@@ -169,11 +169,33 @@ Next.js 15 App Router · React 19 · TypeScript · Tailwind CSS · Vitest (no js
 
 ## Architecture
 
+### Where things live
+
+```
+app/          routes only — every route is a thin shell over a component
+components/
+  hero/       the interactive artwork
+  layout/     site chrome: header, footer, profile dialog
+  portfolio/  everything that shows work: archive, gallery, lightbox, rails
+  useReturnFocus.ts   the one hook both dialogs share
+lib/          pure logic and content records. No DOM, no React — that is what
+              lets the whole of lib/ be unit-tested without jsdom
+scripts/      asset generation (see Commands). Not part of `npm run build`
+assets/       masters that are never served: font OTFs, hero PNGs, source/
+public/       served as-is. Generated output (hero/, og/, icons/, fonts/) is
+              committed; art/ holds the plates
+docs/         the audit this work answers to
+tests/e2e/    Playwright. Unit tests sit beside their module in lib/
+```
+
+`assets/` and `public/` are the load-bearing distinction: if a file is in
+`public/` a visitor can download it, so masters stay out of it.
+
 ### Eye-follower feature
 
 The homepage (`app/page.tsx`) renders a single interactive artwork: a comic drawing of a man in barbed wire whose eye follows the cursor.
 
-The effect is achieved by **layering three images** inside `components/EyeFollowerArt.tsx`:
+The effect is achieved by **layering three images** inside `components/hero/EyeFollowerArt.tsx`:
 
 1. **artwork** — the full illustration, responsive AVIF/WebP with a PNG fallback.
 2. **pupil** (`/hero/pupil.*.png`, 43×30) — the iris, positioned absolutely and shifted by `eyeOffset` each frame.
@@ -198,7 +220,7 @@ the `immutable` cache header in `next.config.mjs` safe.
 
 ### Motion pipeline
 
-`components/EyeFollowerArt.tsx` wires two `lib/` modules together inside a `requestAnimationFrame` loop:
+`components/hero/EyeFollowerArt.tsx` wires two `lib/` modules together inside a `requestAnimationFrame` loop:
 
 - **`lib/eyeMotion.ts`** — manages a rolling pointer history buffer.
   - `getDelayedPointer` interpolates the cursor's position at `now − EYE_POINTER_DELAY_MS` (50 ms), giving a natural reaction lag.
@@ -212,7 +234,7 @@ the `immutable` cache header in `next.config.mjs` safe.
 
 `lib/navigation.ts` is the single source of truth for nav items and for which
 item counts as active (`/work/*` redirects into the archive, so those paths keep
-**Archiv** current). `components/SiteHeader.tsx` renders them in a fixed header
+**Archiv** current). `components/layout/SiteHeader.tsx` renders them in a fixed header
 on a solid `paper` ground with a hairline bottom border. Nav hit areas fill the
 full header height — the label is 11px, the target is not.
 
@@ -288,12 +310,13 @@ size is an alias over a custom property defined in `app/globals.css`:
 - **Accent.** `--accent` is sampled from the artwork and has exactly one job:
   marking the selected archive entry. It is 12:1 on ink and 1.5:1 on paper, so
   it is never text on a paper ground.
-- **Type ramp.** `display-xl`, `display-lg`, `display-md`, `lead`, `lead-sm`,
-  `body`, `kicker`. Display sizes clamp against `svh` as well as `vw` so a
-  full-height panel cannot outgrow its own box on a short laptop.
+- **Type ramp.** `display-hero`, `display-xl`, `display-lg`, `display-md`,
+  `display-sm`, `lead`, `lead-sm`, `body`, `body-lg`. Display sizes clamp
+  against `svh` as well as `vw` so a full-height panel cannot outgrow its own
+  box on a short laptop. Small labels are not in this ramp — they are `.kicker`.
 - **Utility type.** `--type-utility` (11px) and `--track-utility` (0.14em) are
-  the one source for every small label: `.kicker`, `.skip-link`, `.btn` and the
-  Tailwind `kicker` token all read them. It was 10px at 0.18em, which read as
+  the one source for every small label: `.kicker`, `.skip-link` and `.btn` all
+  read them. It was 10px at 0.18em, which read as
   texture rather than text on dense screens. The letterforms grew; the gaps
   between them did not. `--track-utility-open` is the nav's hover expansion,
   scaled with the base instead of pinned.
@@ -336,8 +359,8 @@ site leans on native `<dialog>`, `:has()`, container queries, `dvh`/`svh`,
 scroll snapping and scripted focus, and every one of the WebKit bugs documented
 above was found by adding those engines. Browsers: `npx playwright install`.
 
-`tests/e2e/audit-regressions.spec.ts` carries one test per finding of the
-8 August 2026 audit, named by its identifier.
+`tests/e2e/audit-regressions.spec.ts` carries one test per finding of
+`docs/audit-2026-08-08.md`, named by its identifier.
 `tests/e2e/content-stress.spec.ts` swaps worst-case German into the live DOM and
 asserts the layout still holds — the copy on the site is still placeholder, so
 this is what will say whether the real copy fits.

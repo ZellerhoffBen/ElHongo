@@ -22,7 +22,8 @@ export type WorkProject = {
   images: WorkImage[];
 };
 
-const image = (
+/** Shared by both project lists, so a plate is described the same way in each. */
+export const image = (
   src: string,
   width: number,
   height: number,

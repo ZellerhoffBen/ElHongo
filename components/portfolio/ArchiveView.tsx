@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ProjectGallery } from "@/components/portfolio/ProjectGallery";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import {
   archiveProjects,
   getProjectCover,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ProfileLink } from "@/components/ArtistProfile";
-import { SiteFooter } from "@/components/SiteFooter";
+import { ProfileLink } from "@/components/layout/ArtistProfile";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { archiveProjects } from "@/lib/archiveProjects";
 
 export const metadata: Metadata = {

@@ -1,7 +1,7 @@
 /**
  * Geometry for the layered hero artwork.
  *
- * Single source of truth for `components/EyeFollowerArt.tsx` and
+ * Single source of truth for `components/hero/EyeFollowerArt.tsx` and
  * `scripts/build-hero-assets.mjs`, which crops the mask from these numbers.
  * Every constant is expressed in the artwork's native pixel space.
  */

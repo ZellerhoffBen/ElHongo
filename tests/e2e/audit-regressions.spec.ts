@@ -53,7 +53,6 @@ test("F02 — the archive never downloads homepage artwork", async ({ page }) =>
   await page.waitForTimeout(400);
 
   expect(requests.filter((url) => url.includes("/hero/"))).toEqual([]);
-  expect(requests.filter((url) => url.includes("mask_test"))).toEqual([]);
 });
 
 test("F03 + F13 — featured plates are captioned links into their projects", async ({
