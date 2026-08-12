@@ -13,6 +13,7 @@ import {
   resolveLegacyProjectId,
 } from "@/lib/archiveProjects";
 import type { WorkProject } from "@/lib/workProjects";
+import { ARROW_DOWN_RIGHT, ARROW_LEFT, ARROW_RIGHT, ARROW_UP } from "@/lib/glyphs";
 
 const projectHref = (project: WorkProject) => `/archive/${project.slug}`;
 
@@ -200,7 +201,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
           <div className="kicker absolute inset-x-7 bottom-0 z-10 flex items-end justify-between gap-5 border-t border-rule-soft bg-surface py-5">
             <span>{previewProject.title}</span>
             <span className="inline-flex items-center gap-2 transition-transform duration-200 ease-edge group-hover:translate-x-1">
-              Öffnen <span aria-hidden="true">↘</span>
+              Öffnen <span aria-hidden="true">{ARROW_DOWN_RIGHT}</span>
             </span>
           </div>
         </Link>
@@ -258,7 +259,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
               onClick={scrollToRegister}
               className="btn btn-quiet shrink-0"
             >
-              <span aria-hidden="true">↑</span> Zum Register
+              <span aria-hidden="true">{ARROW_UP}</span> Zum Register
             </button>
           </div>
 
@@ -272,8 +273,8 @@ export function ArchiveView({ project }: ArchiveViewProps) {
           className="grid border-t border-ink sm:grid-cols-2"
         >
           {[
-            { project: neighbours?.previous, label: "Vorheriges Projekt", arrow: "←" },
-            { project: neighbours?.next, label: "Nächstes Projekt", arrow: "→" },
+            { project: neighbours?.previous, label: "Vorheriges Projekt", arrow: ARROW_LEFT },
+            { project: neighbours?.next, label: "Nächstes Projekt", arrow: ARROW_RIGHT },
           ].map(({ project: neighbour, label, arrow }, index) =>
             neighbour ? (
               <Link
@@ -308,7 +309,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
 
         <div className="page-x flex justify-end border-t border-ink py-2">
           <button type="button" onClick={scrollToRegister} className="btn btn-primary">
-            <span aria-hidden="true">↑</span> Zum Register
+            <span aria-hidden="true">{ARROW_UP}</span> Zum Register
           </button>
         </div>
         </>

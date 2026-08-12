@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProfileLink } from "@/components/layout/ArtistProfile";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { archiveProjects } from "@/lib/archiveProjects";
+import { ARROW_UP_RIGHT } from "@/lib/glyphs";
 
 export const metadata: Metadata = {
   title: "Nicht gefunden — EL HONGO",
@@ -58,7 +59,7 @@ export default function NotFound() {
                 aria-hidden="true"
                 className="text-lg transition-transform duration-200 ease-edge group-hover:-translate-y-1 group-hover:translate-x-1"
               >
-                ↗
+                {ARROW_UP_RIGHT}
               </span>
             </Link>
           ))}

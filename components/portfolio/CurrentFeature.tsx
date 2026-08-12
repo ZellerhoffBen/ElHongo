@@ -64,12 +64,15 @@ export function CurrentFeature({ feature }: CurrentFeatureProps) {
           own put 136px between the description and the plate it describes —
           the text read as a separate section rather than as the label for the
           picture underneath it. The column's `pb-section-xs` is now the whole
-          gap. The top padding stays, so the block sits far closer to its image
-          than to the header above it, which is the grouping the eye should
-          read. From `lg` the media moves beside the text and the symmetric
-          padding is what centres it in the 78svh row.
+          gap.
+
+          From `lg` the media moves beside the text, and `content-start` is
+          what keeps the title with its eyebrow: centring the block in the
+          78svh row left the number pinned to the top and the title floating
+          115px below it, so the two read as unrelated. Top-aligned, the title
+          also starts level with the top of the plate next to it.
         */}
-        <div className="grid content-center pt-section-lg lg:py-section">
+        <div className="grid content-center pt-section-sm lg:content-start lg:py-section">
           <h2 className="max-w-[11ch] text-display-md uppercase [overflow-wrap:anywhere]">
             {feature.title}
           </h2>

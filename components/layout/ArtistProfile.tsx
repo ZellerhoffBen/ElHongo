@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { focusOpener, useReturnFocus } from "@/components/useReturnFocus";
+import { ARROW_RIGHT, ARROW_UP_RIGHT } from "@/lib/glyphs";
 
 const path = [
   {
@@ -115,7 +116,7 @@ export function ProfileLink({ className }: { className?: string }) {
         open();
       }}
     >
-      Profil <span aria-hidden="true">↗</span>
+      Profil <span aria-hidden="true">{ARROW_UP_RIGHT}</span>
     </button>
   );
 }
@@ -198,7 +199,7 @@ function ArtistProfileDialog({
                 </h2>
                 <p className="kicker mt-4 text-fg-faint">aka EL HONGO</p>
               </div>
-              <p className="kicker text-fg-faint">Zürich → Hamburg</p>
+              <p className="kicker text-fg-faint">Zürich {ARROW_RIGHT} Hamburg</p>
             </div>
           </aside>
 

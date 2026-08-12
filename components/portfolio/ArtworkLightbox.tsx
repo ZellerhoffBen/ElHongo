@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, type PointerEvent } from "react";
 import { useReturnFocus } from "@/components/useReturnFocus";
 import type { WorkImage, WorkProject } from "@/lib/workProjects";
+import { ARROW_LEFT, ARROW_RIGHT } from "@/lib/glyphs";
 
 const SWIPE_THRESHOLD = 48;
 
@@ -179,8 +180,8 @@ export function ArtworkLightbox({
 
           <div className="-mr-5 flex shrink-0 items-stretch sm:-mr-7 lg:-mr-12">
             {[
-              { label: "Vorheriges Bild", arrow: "←", delta: -1 },
-              { label: "Nächstes Bild", arrow: "→", delta: 1 },
+              { label: "Vorheriges Bild", arrow: ARROW_LEFT, delta: -1 },
+              { label: "Nächstes Bild", arrow: ARROW_RIGHT, delta: 1 },
             ].map(({ label, arrow, delta }) => (
               <button
                 key={label}

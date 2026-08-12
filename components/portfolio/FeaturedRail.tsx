@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FeaturedWork } from "@/lib/featuredWorks";
+import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP_RIGHT } from "@/lib/glyphs";
 
 type FeaturedRailProps = {
   works: FeaturedWork[];
@@ -89,8 +90,8 @@ export function FeaturedRail({ works }: FeaturedRailProps) {
 
         <div className="flex items-center gap-1">
           {[
-            { label: "Vorheriges Blatt", arrow: "←", step: -1 },
-            { label: "Nächstes Blatt", arrow: "→", step: 1 },
+            { label: "Vorheriges Blatt", arrow: ARROW_LEFT, step: -1 },
+            { label: "Nächstes Blatt", arrow: ARROW_RIGHT, step: 1 },
           ].map(({ label, arrow, step }) => {
             const target = activeIndex + step;
             const disabled = target < 0 || target >= works.length;
@@ -163,7 +164,7 @@ export function FeaturedRail({ works }: FeaturedRailProps) {
                   aria-hidden="true"
                   className="shrink-0 text-xs transition-transform duration-200 ease-edge group-hover:translate-x-0.5"
                 >
-                  ↗
+                  {ARROW_UP_RIGHT}
                 </span>
               </span>
               <span className="kicker text-fg-faint">

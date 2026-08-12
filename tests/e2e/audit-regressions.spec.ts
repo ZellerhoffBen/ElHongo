@@ -102,13 +102,10 @@ test("F04 — the mobile first screen states who this is and what they do", asyn
       return { top: box.top, bottom: box.bottom, viewport: window.innerHeight };
     });
 
-  // The occupation is stated in full before the artwork begins. This is the
-  // substance of F04: a first-time visitor learns what this person does without
-  // scrolling, on the shortest phone in the matrix.
-  const runningHead = await geometry(page.getByText(/Illustrator\s*·\s*Zürich/));
-  expect(runningHead.bottom).toBeLessThanOrEqual(runningHead.viewport);
-
-  // The name lockup follows the artwork and still opens on the first screen.
+  // What answers F04 is the hero's height, not a caption above it: at 46svh
+  // the drawing can no longer take the whole first screen, so the name lockup
+  // opens on it. A running head above the artwork used to carry this too, but
+  // it sat on top of the work — the one thing the first screen is for.
   const name = await geometry(page.getByRole("heading", { level: 1 }));
   expect(name.top).toBeLessThan(name.viewport);
 });

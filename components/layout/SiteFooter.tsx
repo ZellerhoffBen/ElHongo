@@ -1,4 +1,5 @@
 import { siteInfo } from "@/lib/siteInfo";
+import { ARROW_UP_RIGHT } from "@/lib/glyphs";
 
 const contactChannels = [
   {
@@ -43,7 +44,7 @@ export function SiteFooter() {
               aria-hidden="true"
               className="col-start-2 row-span-2 row-start-1 text-lg transition-transform duration-200 ease-edge group-hover:-translate-y-1 group-hover:translate-x-1"
             >
-              ↗
+              {ARROW_UP_RIGHT}
             </span>
           </a>
         ))}

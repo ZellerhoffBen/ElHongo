@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ArtworkLightbox } from "@/components/portfolio/ArtworkLightbox";
 import { focusOpener } from "@/components/useReturnFocus";
 import type { WorkImage, WorkProject } from "@/lib/workProjects";
+import { ARROW_UP_RIGHT } from "@/lib/glyphs";
 
 type ProjectGalleryProps = {
   project: WorkProject;
@@ -69,7 +70,7 @@ function Artwork({
         <span className="flex items-baseline gap-4">
           {image.documentation ? <span>Dokumentation</span> : null}
           <span aria-hidden="true" className="opacity-0 transition-opacity group-focus-visible:opacity-100 sm:opacity-100">
-            Vergrössern ↗
+            Vergrössern {ARROW_UP_RIGHT}
           </span>
         </span>
       </figcaption>

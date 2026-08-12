@@ -96,24 +96,6 @@ export default function Home() {
           className="home-snap-panel home-snap-intro scroll-mt-[var(--site-header-offset)] border-b border-ink lg:grid lg:h-[calc(100svh-var(--site-header-offset))] lg:min-h-[calc(100svh-var(--site-header-offset))] lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.18fr)] lg:overflow-hidden"
         >
           {/*
-            Running head, below `lg` only.
-
-            The artwork used to take the entire first screen and the occupation
-            arrived somewhere below it. Two lines of utility type answer "who is
-            this and what do they do" before the drawing starts, at a cost of
-            ~56px — the work stays dominant, which a shrunken hero would not
-            have achieved. The header already carries the wordmark, so this
-            says only what the header does not.
-          */}
-          <p className="kicker page-x flex min-h-14 items-center gap-x-3 border-b border-ink text-fg-muted lg:hidden">
-            <span className="text-fg">{siteInfo.occupation}</span>
-            <span aria-hidden="true" className="text-fg-faint">
-              ·
-            </span>
-            <span>Zürich → Hamburg</span>
-          </p>
-
-          {/*
             An explicit height, not a minimum: the artwork overscales to 130% of
             its column and is ~1.28x the viewport width tall, so `min-h` was
             never the binding constraint and the hero consumed the whole screen
