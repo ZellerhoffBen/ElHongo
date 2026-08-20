@@ -270,7 +270,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
             gallery wants the next body of work, not an index. */}
         <nav
           aria-label="Weitere Projekte"
-          className="grid border-t border-ink sm:grid-cols-2"
+          className="hidden border-t border-ink sm:grid sm:grid-cols-2"
         >
           {[
             { project: neighbours?.previous, label: "Vorheriges Projekt", arrow: ARROW_LEFT },

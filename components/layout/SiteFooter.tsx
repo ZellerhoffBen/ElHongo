@@ -32,12 +32,12 @@ export function SiteFooter() {
             href={channel.href}
             target={channel.external ? "_blank" : undefined}
             rel={channel.external ? "noreferrer" : undefined}
-            className="page-x group grid min-h-24 grid-cols-[1fr_auto] content-between gap-x-5 border-b border-ink py-5 transition-colors duration-200 ease-edge last:border-b-0 hover:bg-ink hover:text-paper [--focus-offset:-4px] sm:min-h-28 sm:border-b-0 sm:py-6 sm:[&:first-child]:border-r"
+            className="page-x group grid min-h-16 grid-cols-[1fr_auto] content-between gap-x-4 border-b border-ink py-3 transition-colors duration-200 ease-edge last:border-b-0 hover:bg-ink hover:text-paper [--focus-offset:-4px] sm:min-h-28 sm:gap-x-5 sm:border-b-0 sm:py-6 sm:[&:first-child]:border-r"
           >
             <span className="kicker text-fg-faint transition-colors group-hover:text-paper/70">
               0{index + 1} — {channel.label}
             </span>
-            <span className="col-start-1 row-start-2 mt-4 min-w-0 break-words text-[clamp(1rem,1.8vw,1.65rem)] font-bold leading-none tracking-[-0.025em]">
+            <span className="col-start-1 row-start-2 mt-2 min-w-0 break-words text-[clamp(0.875rem,3.8vw,1.65rem)] font-bold leading-none tracking-[-0.025em] sm:mt-4 sm:text-[clamp(1rem,1.8vw,1.65rem)]">
               {channel.value}
             </span>
             <span
@@ -50,9 +50,9 @@ export function SiteFooter() {
         ))}
       </nav>
 
-      <div className="page-x kicker flex flex-wrap justify-between gap-3 py-4 text-fg-faint">
+      <div className="page-x kicker flex flex-wrap justify-between gap-3 py-3 text-fg-faint sm:py-4">
         <span>EL HONGO / Jonas Aellig</span>
-        <span>Illustration · Zeichnung · Objekte</span>
+        <span className="hidden sm:inline">Illustration · Zeichnung · Objekte</span>
       </div>
     </footer>
   );

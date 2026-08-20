@@ -77,11 +77,10 @@ test("F03 + F13 — featured plates are captioned links into their projects", as
   }
 
   if (isNarrow(page)) {
-    // F13: orientation for a rail that is cropped at this width.
-    await expect(page.getByText(/Ausgewählte Blätter\s*01 \/ 03/)).toBeVisible();
-    await page.getByRole("button", { name: "Nächstes Blatt" }).click();
-    await expect(page.getByText(/02 \/ 03/)).toBeVisible();
-    await expect(page.getByRole("button", { name: "Vorheriges Blatt" })).toBeEnabled();
+    // The cropped rail is deliberately self-evident on mobile: artwork only,
+    // without a counter or arrow controls competing with the plates.
+    await expect(page.getByRole("button", { name: "Nächstes Blatt" })).toHaveCount(0);
+    await expect(page.getByText(/Ausgewählte Blätter\s*01 \/ 03/)).toHaveCount(0);
   }
 
   await cards.first().click();
@@ -214,6 +213,25 @@ test("F09 — the profile dialog closes with Escape and returns focus", async ({
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
+});
+
+test("F09 — pointer dismissal restores focus without a stuck focus box", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  const trigger = page
+    .getByRole("navigation", { name: "Hauptnavigation" })
+    .getByRole("button", { name: "Profil", exact: true });
+
+  await trigger.click();
+  await page.getByRole("button", { name: "Profil schliessen" }).click();
+
+  await expect(trigger).toBeFocused();
+  await expect(trigger).toHaveAttribute("data-return-focus", "silent");
+  expect(await trigger.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe(
+    "none",
+  );
 });
 
 test("F10 — the hero is one described picture, not three unnamed layers", async ({

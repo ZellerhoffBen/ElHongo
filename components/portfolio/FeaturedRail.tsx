@@ -1,16 +1,11 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
 import type { FeaturedWork } from "@/lib/featuredWorks";
-import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP_RIGHT } from "@/lib/glyphs";
+import { ARROW_UP_RIGHT } from "@/lib/glyphs";
 
 type FeaturedRailProps = {
   works: FeaturedWork[];
 };
-
-const pad = (value: number) => String(value).padStart(2, "0");
 
 /**
  * "Ausgewählte Blätter".
@@ -21,99 +16,9 @@ const pad = (value: number) => String(value).padStart(2, "0");
  * category — the selection has to be a route into the work, not texture.
  */
 export function FeaturedRail({ works }: FeaturedRailProps) {
-  const railRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  // Derived from real scroll position rather than click history, so a swipe,
-  // a keyboard scroll and a button press all agree on where the reader is.
-  const syncActiveIndex = useCallback(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-
-    const panels = [...rail.children] as HTMLElement[];
-    const railCentre = rail.scrollLeft + rail.clientWidth / 2;
-    let closest = 0;
-    let smallestGap = Number.POSITIVE_INFINITY;
-
-    panels.forEach((panel, index) => {
-      const gap = Math.abs(panel.offsetLeft + panel.offsetWidth / 2 - railCentre);
-      if (gap < smallestGap) {
-        smallestGap = gap;
-        closest = index;
-      }
-    });
-
-    setActiveIndex(closest);
-  }, []);
-
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-
-    syncActiveIndex();
-    rail.addEventListener("scroll", syncActiveIndex, { passive: true });
-    window.addEventListener("resize", syncActiveIndex);
-    return () => {
-      rail.removeEventListener("scroll", syncActiveIndex);
-      window.removeEventListener("resize", syncActiveIndex);
-    };
-  }, [syncActiveIndex]);
-
-  const scrollToIndex = useCallback((index: number) => {
-    const rail = railRef.current;
-    const panel = rail?.children[index] as HTMLElement | undefined;
-    if (!rail || !panel) return;
-
-    rail.scrollTo({
-      left: panel.offsetLeft - (rail.clientWidth - panel.offsetWidth) / 2,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-    });
-  }, []);
-
   return (
-    <div className="mt-section-sm sm:mt-section lg:mt-0 lg:grid lg:min-h-0 lg:grid-rows-[auto_minmax(0,1fr)]">
-      {/*
-        Orientation, not chrome: the label says what the rail is, the counter
-        says how far through it you are, and the arrows exist so the rail is
-        operable without a trackpad. All three disappear at `lg`, where the
-        whole selection is visible at once and none of it is true any more.
-      */}
-      <div className="flex items-center justify-between gap-4 pb-4 lg:hidden">
-        <p className="kicker text-fg-faint">
-          Ausgewählte Blätter{" "}
-          <span className="whitespace-nowrap text-fg">
-            {pad(activeIndex + 1)} / {pad(works.length)}
-          </span>
-        </p>
-
-        <div className="flex items-center gap-1">
-          {[
-            { label: "Vorheriges Blatt", arrow: ARROW_LEFT, step: -1 },
-            { label: "Nächstes Blatt", arrow: ARROW_RIGHT, step: 1 },
-          ].map(({ label, arrow, step }) => {
-            const target = activeIndex + step;
-            const disabled = target < 0 || target >= works.length;
-
-            return (
-              <button
-                key={label}
-                type="button"
-                aria-label={label}
-                disabled={disabled}
-                onClick={() => scrollToIndex(target)}
-                className="flex h-11 w-11 items-center justify-center border border-rule-soft text-base transition-colors duration-150 hover:bg-fg hover:text-surface disabled:pointer-events-none disabled:opacity-35"
-              >
-                <span aria-hidden="true">{arrow}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
+    <div className="mt-section-sm sm:mt-section lg:mt-0 lg:grid lg:min-h-0 lg:grid-rows-[minmax(0,1fr)]">
       <div
-        ref={railRef}
         role="region"
         aria-label="Ausgewählte Blätter"
         tabIndex={0}
@@ -155,7 +60,7 @@ export function FeaturedRail({ works }: FeaturedRailProps) {
               The caption is the point of the change: a visitor can now say what
               a plate is and where the rest of it lives.
             */}
-            <figcaption className="grid gap-2 border-t border-rule-soft px-5 py-4 sm:px-8 lg:px-6">
+            <figcaption className="hidden gap-2 border-t border-rule-soft px-5 py-4 sm:grid sm:px-8 lg:px-6">
               <span className="flex items-baseline justify-between gap-3">
                 <span className="min-w-0 truncate text-sm font-bold uppercase leading-none tracking-[-0.03em] sm:text-base">
                   {project.title}

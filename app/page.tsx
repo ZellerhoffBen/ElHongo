@@ -97,17 +97,18 @@ export default function Home() {
         >
           {/*
             Below `lg` the frame is cropped horizontally and never vertically:
-            the wire runs off both edges, the body keeps its air above and
-            below. A fixed height did the opposite — it cut 105px off the top
-            and 104px off the bottom on a phone, beheading the drawing.
+            the wire runs off both edges while both hands and the foot remain
+            inside the frame. A fixed height did the opposite — it cut the
+            figure vertically on short phones.
 
             The two numbers are measured off the master, not guessed. Its ink
             spans x 176..2035 of 2038, so 112% is what pushes the drawn wire
             past both edges. That ink is also not centred — 176px of white on
             the left against 2px on the right — so a plain overscale would
             crop the right-hand wire while still showing white on the left.
-            The 4.2% shift is that 86px offset, which re-centres the drawing
-            rather than the file it happens to sit in.
+            Flex centring already moves the 112%-wide frame 6% of the viewport
+            to the left. The remaining 3.2% shift removes the measured white
+            margin while retaining a small safety margin around the left hand.
 
             Height stays free, so it follows the width: near-square artwork on
             a phone is about a viewport-width tall, which leaves the name
@@ -115,7 +116,7 @@ export default function Home() {
             viewport, the bleed is bigger and symmetric cropping is fine.
           */}
           <figure className="flex items-center justify-center overflow-hidden border-b border-ink bg-white lg:h-auto lg:min-h-0 lg:border-b-0 lg:border-r">
-            <EyeFollowerArt className="w-[112%] max-w-none shrink-0 -translate-x-[4.2%] lg:w-[130%] lg:translate-x-0" />
+            <EyeFollowerArt className="w-[112%] max-w-none shrink-0 -translate-x-[3.2%] lg:w-[130%] lg:translate-x-0" />
             {/* The layers are aria-hidden; this is the composition's one name. */}
             <figcaption className="sr-only">
               Comiczeichnung von EL HONGO: ein Mann, der in Stacheldraht
@@ -129,17 +130,13 @@ export default function Home() {
             tagline occupies the last row and is pinned to its bottom edge.
             Below lg the fr rows collapse and the gap does the spacing.
           */}
-          <div className="page-x grid gap-[clamp(1.5rem,4.5svh,3.25rem)] py-section-sm sm:py-section-lg lg:min-h-0 lg:grid-rows-[1fr_auto_1fr] lg:gap-0 lg:py-[clamp(1rem,3.5svh,4rem)]">
-            {/*
-              The 0.74 leading of `display-hero` is drawn for the one-line
-              lockup it was measured on. Below `sm` the name wraps and the
-              ascenders of the second line run into the baseline of the first,
-              so narrow viewports get leading back — the compression stays
-              wherever the line actually fits.
-            */}
+          <div className="page-x grid gap-8 py-8 sm:gap-[clamp(1.5rem,4.5svh,3.25rem)] sm:py-section-lg lg:min-h-0 lg:grid-rows-[1fr_auto_1fr] lg:gap-0 lg:py-[clamp(1rem,3.5svh,4rem)]">
+            {/* On phones the alias stays loud while the real name becomes a
+                single, quieter author line. Wider screens return to the equal
+                scale of the desktop lockup. */}
             <h1
               aria-label={`${siteInfo.alias} aka ${siteInfo.artistName}`}
-              className="text-display-hero uppercase leading-[0.86] sm:leading-[0.74] lg:row-start-2"
+              className="text-[clamp(3rem,14.5vw,3.75rem)] font-bold uppercase leading-[0.82] tracking-[-0.06em] sm:text-display-hero sm:leading-[0.74] lg:row-start-2"
             >
               <span aria-hidden="true" className="block">
                 EL HONGO
@@ -150,13 +147,16 @@ export default function Home() {
               >
                 aka
               </span>
-              <span aria-hidden="true" className="block">
+              <span
+                aria-hidden="true"
+                className="block whitespace-nowrap text-[clamp(2rem,9.4vw,2.5rem)] leading-[0.88] tracking-[-0.045em] sm:whitespace-normal sm:text-[inherit] sm:leading-[inherit] sm:tracking-[inherit]"
+              >
                 Jonas Aellig
               </span>
             </h1>
 
-            <div className="flex flex-col items-start gap-6 lg:row-start-3 lg:gap-[clamp(1rem,2.5svh,2rem)] lg:self-end lg:pt-[clamp(0.5rem,2svh,2.5rem)]">
-              <p className="max-w-[22ch] text-lead">
+            <div className="flex flex-col items-start gap-4 sm:gap-6 lg:row-start-3 lg:gap-[clamp(1rem,2.5svh,2rem)] lg:self-end lg:pt-[clamp(0.5rem,2svh,2.5rem)]">
+              <p className="max-w-[28ch] text-base font-bold leading-[1.08] tracking-[-0.02em] sm:max-w-[22ch] sm:text-lead">
                 Illustrator in Zürich. Student in Hamburg. Whatever du hier
                 hinschreiben willst
               </p>
