@@ -81,6 +81,6 @@ export const FALLBACK_WIDTH = 1280;
 
 /**
  * Width the browser should assume when picking a rung. Mirrors the layout in
- * `app/page.tsx`: 112%-wide below `lg`, one overscaled column above it.
+ * `app/page.tsx`: 118%-wide below `lg`, one overscaled column above it.
  */
-export const ARTWORK_SIZES = "(min-width: 1024px) 54vw, 112vw";
+export const ARTWORK_SIZES = "(min-width: 1024px) 54vw, 118vw";

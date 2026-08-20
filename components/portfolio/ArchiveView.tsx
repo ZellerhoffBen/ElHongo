@@ -307,7 +307,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
           )}
         </nav>
 
-        <div className="page-x flex justify-end border-t border-ink py-2">
+        <div className="page-x hidden justify-end border-t border-ink py-2 sm:flex">
           <button type="button" onClick={scrollToRegister} className="btn btn-primary">
             <span aria-hidden="true">{ARROW_UP}</span> Zum Register
           </button>

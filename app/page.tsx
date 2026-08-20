@@ -102,12 +102,12 @@ export default function Home() {
             figure vertically on short phones.
 
             The two numbers are measured off the master, not guessed. Its ink
-            spans x 176..2035 of 2038, so 112% is what pushes the drawn wire
-            past both edges. That ink is also not centred — 176px of white on
+            spans x 176..2035 of 2038, so 118% gives the drawing a closer,
+            more immediate scale. That ink is also not centred — 176px of white on
             the left against 2px on the right — so a plain overscale would
             crop the right-hand wire while still showing white on the left.
-            Flex centring already moves the 112%-wide frame 6% of the viewport
-            to the left. The remaining 3.2% shift removes the measured white
+            Flex centring already moves the 118%-wide frame 9% of the viewport
+            to the left. The remaining 0.9% shift removes the measured white
             margin while retaining a small safety margin around the left hand.
 
             Height stays free, so it follows the width: near-square artwork on
@@ -116,7 +116,7 @@ export default function Home() {
             viewport, the bleed is bigger and symmetric cropping is fine.
           */}
           <figure className="flex items-center justify-center overflow-hidden border-b border-ink bg-white lg:h-auto lg:min-h-0 lg:border-b-0 lg:border-r">
-            <EyeFollowerArt className="w-[112%] max-w-none shrink-0 -translate-x-[3.2%] lg:w-[130%] lg:translate-x-0" />
+            <EyeFollowerArt className="w-[118%] max-w-none shrink-0 -translate-x-[0.9%] lg:w-[130%] lg:translate-x-0" />
             {/* The layers are aria-hidden; this is the composition's one name. */}
             <figcaption className="sr-only">
               Comiczeichnung von EL HONGO: ein Mann, der in Stacheldraht
@@ -131,12 +131,11 @@ export default function Home() {
             Below lg the fr rows collapse and the gap does the spacing.
           */}
           <div className="page-x grid gap-8 py-8 sm:gap-[clamp(1.5rem,4.5svh,3.25rem)] sm:py-section-lg lg:min-h-0 lg:grid-rows-[1fr_auto_1fr] lg:gap-0 lg:py-[clamp(1rem,3.5svh,4rem)]">
-            {/* On phones the alias stays loud while the real name becomes a
-                single, quieter author line. Wider screens return to the equal
-                scale of the desktop lockup. */}
+            {/* Both names deliberately carry the same weight and scale: the
+                real name is not secondary to the alias. */}
             <h1
               aria-label={`${siteInfo.alias} aka ${siteInfo.artistName}`}
-              className="text-[clamp(3rem,14.5vw,3.75rem)] font-bold uppercase leading-[0.82] tracking-[-0.06em] sm:text-display-hero sm:leading-[0.74] lg:row-start-2"
+              className="text-display-hero uppercase leading-[0.86] sm:leading-[0.74] lg:row-start-2"
             >
               <span aria-hidden="true" className="block">
                 EL HONGO
@@ -147,10 +146,7 @@ export default function Home() {
               >
                 aka
               </span>
-              <span
-                aria-hidden="true"
-                className="block whitespace-nowrap text-[clamp(2rem,9.4vw,2.5rem)] leading-[0.88] tracking-[-0.045em] sm:whitespace-normal sm:text-[inherit] sm:leading-[inherit] sm:tracking-[inherit]"
-              >
+              <span aria-hidden="true" className="block">
                 Jonas Aellig
               </span>
             </h1>
