@@ -23,15 +23,36 @@ export function useReturnFocus() {
       active instanceof HTMLElement && active !== document.body ? active : null;
   }, []);
 
-  const restore = useCallback(() => {
-    const opener = openerRef.current;
-    openerRef.current = null;
+  const restore = useCallback(
+    ({ focusVisible = true }: { focusVisible?: boolean } = {}) => {
+      const opener = openerRef.current;
+      openerRef.current = null;
 
-    if (!opener?.isConnected) return;
-    if (document.activeElement === opener) return;
+      if (!opener?.isConnected) return;
 
-    opener.focus({ preventScroll: true });
-  }, []);
+      // Safari can classify programmatically restored focus as `:focus-visible`
+      // even when a pointer closed the dialog. Keep the focus itself for
+      // accessibility, but silence its ring until the user moves away. Keyboard
+      // dismissals retain the normal, visible focus treatment.
+      if (focusVisible) {
+        delete opener.dataset.returnFocus;
+      } else {
+        opener.dataset.returnFocus = "silent";
+        opener.addEventListener(
+          "blur",
+          () => delete opener.dataset.returnFocus,
+          { once: true },
+        );
+      }
+
+      // Native dialog implementations may already have returned focus by the
+      // time this runs. The marker above must still be applied in that case.
+      if (document.activeElement === opener) return;
+
+      opener.focus({ preventScroll: true });
+    },
+    [],
+  );
 
   return { remember, restore };
 }

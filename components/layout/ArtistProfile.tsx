@@ -50,10 +50,13 @@ export function ArtistProfileProvider({ children }: { children: ReactNode }) {
     dialogRef.current?.showModal();
   }, [remember]);
 
-  const close = useCallback(() => {
-    dialogRef.current?.close();
-    restore();
-  }, [restore]);
+  const close = useCallback(
+    (focusVisible = false) => {
+      dialogRef.current?.close();
+      restore({ focusVisible });
+    },
+    [restore],
+  );
 
   const value = useMemo(() => ({ open }), [open]);
 
@@ -126,7 +129,7 @@ function ArtistProfileDialog({
   onClose,
 }: {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
-  onClose: () => void;
+  onClose: (focusVisible?: boolean) => void;
 }) {
   return (
     <dialog
@@ -136,7 +139,7 @@ function ArtistProfileDialog({
       aria-describedby="artist-profile-copy"
       className="profile-dialog tone-paper text-ink"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) onClose(false);
       }}
       onKeyDown={(event) => {
         if (event.key !== "Escape") return;
@@ -145,10 +148,10 @@ function ArtistProfileDialog({
         // Cancelling the default and closing here gives every browser, and every
         // test harness, exactly one deterministic path.
         event.preventDefault();
-        onClose();
+        onClose(true);
       }}
     >
-      <div className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto bg-paper sm:max-h-[calc(100dvh-3rem)]">
+      <div className="profile-dialog-body bg-paper">
         {/* Record header. The name lives in the identity plate below, so this
             strip only says what kind of entry this is. */}
         <div className="flex min-h-11 items-stretch justify-between border-b border-ink">
@@ -158,15 +161,11 @@ function ArtistProfileDialog({
           <button
             type="button"
             aria-label="Profil schliessen"
-            className="group flex w-11 shrink-0 items-center justify-center border-l border-ink bg-transparent text-xl font-normal leading-none transition-colors hover:bg-ink hover:text-paper"
-            onClick={onClose}
+            className="profile-close flex min-h-11 shrink-0 items-center gap-2 border-l border-ink bg-paper px-4 kicker text-ink"
+            onClick={() => onClose(false)}
           >
-            <span
-              aria-hidden="true"
-              className="transition-transform duration-200 group-hover:rotate-90"
-            >
-              ×
-            </span>
+            <span>Schliessen</span>
+            <span aria-hidden="true" className="text-lg font-normal leading-none">×</span>
           </button>
         </div>
 
@@ -188,7 +187,7 @@ function ArtistProfileDialog({
               />
             </figure>
 
-            <div className="flex min-w-0 flex-1 flex-col justify-between gap-5 p-5 sm:p-6 md:gap-8 md:p-7">
+            <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-4 sm:gap-5 sm:p-6 md:gap-8 md:p-7">
               <div className="min-w-0">
                 <h2
                   id="artist-profile-title"
@@ -197,7 +196,7 @@ function ArtistProfileDialog({
                   <span className="block">Jonas</span>
                   <span className="block">Aellig</span>
                 </h2>
-                <p className="kicker mt-4 text-fg-faint">aka EL HONGO</p>
+                <p className="kicker mt-3 text-fg-faint sm:mt-4">aka EL HONGO</p>
               </div>
               <p className="kicker text-fg-faint">Zürich {ARROW_RIGHT} Hamburg</p>
             </div>
@@ -205,14 +204,14 @@ function ArtistProfileDialog({
 
           {/* Both columns are anchored top and bottom: portrait/locator on the
               ink side, note/path on the paper side. */}
-          <div className="flex flex-col p-5 [container-type:inline-size] sm:p-6 md:p-8">
+          <div className="flex flex-col p-4 [container-type:inline-size] sm:p-6 md:p-8">
             {/* The auto margin sits here, not on the path section, so the
                 minimum gap survives when there is no slack to absorb. */}
             <section className="md:mb-auto">
               <p className="kicker text-fg-faint">Notiz zur Person</p>
               <p
                 id="artist-profile-copy"
-                className="mt-4 max-w-[42ch] text-body-lg normal-case"
+                className="mt-3 max-w-[42ch] text-sm leading-[1.45] normal-case sm:mt-4 sm:text-body-lg"
               >
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur sit amet risus eget mauris posuere interdum. Nunc
@@ -223,20 +222,20 @@ function ArtistProfileDialog({
 
             <section
               aria-labelledby="artist-profile-path"
-              className="mt-7 border-t border-ink pt-5 sm:mt-section-sm md:pt-6"
+              className="mt-5 border-t border-ink pt-4 sm:mt-section-sm sm:pt-5 md:pt-6"
             >
               <h3 id="artist-profile-path" className="kicker">
                 Weg
               </h3>
 
-              <ol className="path-list mt-5">
+              <ol className="path-list mt-4 sm:mt-5">
                 {path.map((item, index) => {
                   const isCurrent = index === path.length - 1;
 
                   return (
                     <li
                       key={item.year}
-                      className="path-step relative pt-4 sm:pt-5"
+                      className="path-step relative min-w-0 pt-3 sm:pt-5"
                     >
                       <span
                         aria-hidden="true"
@@ -248,8 +247,8 @@ function ArtistProfileDialog({
                       <time className="block text-lg font-bold leading-none tracking-[-0.04em]">
                         {item.year}
                       </time>
-                      <p className="kicker mt-2 text-fg-faint">{item.stage}</p>
-                      <p className="mt-1.5 text-[11px] font-bold normal-case leading-tight">
+                      <p className="kicker mt-2 [overflow-wrap:anywhere] text-fg-faint">{item.stage}</p>
+                      <p className="mt-1.5 text-[11px] font-bold normal-case leading-tight [overflow-wrap:anywhere]">
                         {item.place}
                       </p>
                     </li>

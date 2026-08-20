@@ -161,6 +161,12 @@ button:focus-visible,
   outline-offset: var(--focus-offset);
 }
 
+/* A pointer-dismissed dialog still returns focus for accessibility, but Safari
+   must not turn that programmatic focus into a large visible rectangle. */
+[data-return-focus="silent"]:focus-visible {
+  outline: none;
+}
+
 ::selection {
   background: var(--ink);
   color: var(--paper);
@@ -389,17 +395,16 @@ button:focus-visible,
   transform: scaleX(1);
 }
 
-/* Weg: goes three-up only when its own column is wide enough, not when the
-   viewport is — inside the dialog the column is far narrower than the screen,
-   and the tracked labels collide well before a viewport breakpoint would fire. */
+/* Weg: the short chronology stays horizontal so the profile fits within a
+   phone viewport. The gaps open only when the dialog column has enough room. */
 .path-list {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
 }
 
 @container (min-width: 27rem) {
   .path-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5rem;
   }
 }
@@ -430,9 +435,9 @@ button:focus-visible,
 }
 
 .profile-dialog {
-  width: min(56rem, calc(100% - 1.5rem));
+  width: min(56rem, calc(100% - 1rem));
   max-width: none;
-  max-height: calc(100dvh - 1.5rem);
+  max-height: calc(100dvh - 1rem);
   margin: auto;
   padding: 0;
   overflow: hidden;
@@ -440,6 +445,27 @@ button:focus-visible,
   background: var(--paper);
   color: var(--ink);
   box-shadow: none;
+}
+
+.profile-dialog-body {
+  max-height: calc(100dvh - 1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.profile-close {
+  transition: color 150ms linear;
+}
+
+.profile-close:focus-visible {
+  outline: none;
+  background: var(--wash);
+}
+
+@media (hover: hover) {
+  .profile-close:hover {
+    color: var(--fg-faint);
+  }
 }
 
 .profile-dialog::backdrop {
@@ -468,6 +494,10 @@ button:focus-visible,
 @media (min-width: 640px) {
   .profile-dialog {
     width: min(56rem, calc(100% - 3rem));
+    max-height: calc(100dvh - 3rem);
+  }
+
+  .profile-dialog-body {
     max-height: calc(100dvh - 3rem);
   }
 }
