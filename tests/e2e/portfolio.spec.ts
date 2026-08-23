@@ -160,6 +160,16 @@ test("opens archive entries from a clear register", async ({ page }) => {
 
   const register = page.getByRole("navigation", { name: "Archivregister" });
   await expect(register.getByRole("link")).toHaveCount(6);
+  const hasMobileRegister = (page.viewportSize()?.width ?? 640) < 640;
+
+  if (hasMobileRegister) {
+    await expect(register.getByRole("link", { name: /01 SINE 2000/ })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+    await expect(page.locator("#project-title")).toHaveText("SINE 2000");
+    await expect(page).toHaveURL(/\/archive$/);
+  }
 
   const archiveSnapType = await page.evaluate(
     () => getComputedStyle(document.documentElement).scrollSnapType,
@@ -189,7 +199,7 @@ test("opens archive entries from a clear register", async ({ page }) => {
   expect(await hasHorizontalOverflow(page)).toBe(false);
 
   const registerButtons = page.getByRole("button", { name: /Zum Register/ });
-  await expect(registerButtons).toHaveCount(2);
+  await expect(registerButtons).toHaveCount(hasMobileRegister ? 1 : 2);
   await registerButtons.last().scrollIntoViewIfNeeded();
   await registerButtons.last().click();
   await expect(page.getByRole("heading", { level: 1, name: "Archiv" })).toBeVisible();

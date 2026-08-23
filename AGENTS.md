@@ -250,14 +250,16 @@ were somewhere they were not.
 | Route | What it is |
 |---|---|
 | `/` | Atelier: identity, selected work, current activity, contact |
-| `/archive` | The register. Six entries and a hover preview — **no gallery** |
+| `/archive` | The register. On phones SINE 2000 is preselected and continues below it; larger screens show the register and hover preview only |
 | `/archive/[slug]` | One project: header, plates, next/previous. Static, own metadata |
 | `/work/*`, `/about`, `/service` | Redirects. `resolveLegacyProjectId` maps old ids onto today's slugs |
 
 `components/portfolio/ArchiveView.tsx` renders both archive routes from one
-component; `project: null` means the register landing. Rendering the first
-project's gallery on `/archive` made it a near-duplicate of `/archive/sine-2000`
-and cost every visitor a gallery they had not asked for — hence the `null`.
+component; `project: null` means the register landing. On screens below `sm`,
+the client selects SINE 2000 and renders its gallery directly beneath the
+register without changing the URL or scrolling past the index. Larger screens
+keep `/archive` as the standalone register, avoiding an unrequested gallery and
+a near-duplicate of `/archive/sine-2000`.
 
 `/archive#fatguy` links predate project routes and are resolved client-side onto
 `/archive/fat-guy`, because fragments never reach the server.

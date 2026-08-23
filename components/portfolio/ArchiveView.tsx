@@ -24,10 +24,9 @@ const getScrollBehavior = (): ScrollBehavior =>
 
 type ArchiveViewProps = {
   /**
-   * The open project, or `null` on `/archive` — which is the register itself,
-   * not a project view. Rendering the first project's gallery there made the
-   * index a near-duplicate of `/archive/sine-2000` and cost every visitor a
-   * gallery they had not asked for.
+   * The routed project, or `null` on `/archive`. The register stays standalone
+   * on larger screens; below `sm`, its first project is opened beneath it so a
+   * reader can continue straight into the work.
    */
   project: WorkProject | null;
 };
@@ -37,15 +36,20 @@ export function ArchiveView({ project }: ArchiveViewProps) {
   const [previewSlug, setPreviewSlug] = useState(
     project?.slug ?? archiveProjects[0].slug,
   );
+  const [showMobileLead, setShowMobileLead] = useState(false);
   const registerRef = useRef<HTMLElement>(null);
   const projectRef = useRef<HTMLElement>(null);
   const hasRenderedRef = useRef(false);
 
+  const selectedProject =
+    project ?? (showMobileLead ? archiveProjects[0] : null);
   const previewProject =
     archiveProjects.find((entry) => entry.slug === previewSlug) ??
     archiveProjects[0];
   const previewImage = getProjectCover(previewProject);
-  const neighbours = project ? getProjectNeighbours(project.slug) : null;
+  const neighbours = selectedProject
+    ? getProjectNeighbours(selectedProject.slug)
+    : null;
 
   const scrollToRegister = useCallback(() => {
     registerRef.current?.scrollIntoView({
@@ -53,6 +57,18 @@ export function ArchiveView({ project }: ArchiveViewProps) {
       block: "start",
     });
     registerRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  // `/archive` remains a clean register on desktop. In the stacked layout the
+  // first project continues directly below it, without changing the URL or
+  // jumping the reader past the register.
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 639px)");
+    const sync = () => setShowMobileLead(media.matches);
+
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
   }, []);
 
   // The register keeps its hover preview pointed at whatever is open when the
@@ -113,7 +129,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
 
           <nav aria-label="Archivregister">
             {archiveProjects.map((entry) => {
-              const active = entry.slug === project?.slug;
+              const active = entry.slug === selectedProject?.slug;
               const cover = getProjectCover(entry);
               const longTitle = entry.title.length >= 12;
 
@@ -122,7 +138,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
                   key={entry.slug}
                   href={projectHref(entry)}
                   scroll={false}
-                  aria-current={active ? "page" : undefined}
+                  aria-current={active ? (project ? "page" : "true") : undefined}
                   onMouseEnter={() => setPreviewSlug(entry.slug)}
                   onFocus={() => setPreviewSlug(entry.slug)}
                   className={[
@@ -207,7 +223,7 @@ export function ArchiveView({ project }: ArchiveViewProps) {
         </Link>
       </section>
 
-      {project ? (
+      {selectedProject ? (
         <>
         <section
           ref={projectRef}
@@ -219,26 +235,26 @@ export function ArchiveView({ project }: ArchiveViewProps) {
           <header className="archive-snap-point page-x grid gap-12 border-b border-ink py-section sm:gap-14 sm:py-section-lg lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)] lg:items-end">
             <div>
               <p className="kicker text-fg-faint">
-                {project.number} / {project.kind}
-                {project.year ? ` / ${project.year}` : ""}
+                {selectedProject.number} / {selectedProject.kind}
+                {selectedProject.year ? ` / ${selectedProject.year}` : ""}
               </p>
               <h2
                 id="project-title"
                 className={[
                   "project-title mt-5 max-w-full font-bold uppercase leading-[0.74] tracking-[-0.065em]",
-                  project.title.length >= 12
+                  selectedProject.title.length >= 12
                     ? "project-title-long text-[clamp(2.5rem,6vw,7.5rem)]"
                     : "max-w-[11ch] text-[clamp(3.3rem,10vw,11rem)]",
                 ].join(" ")}
               >
-                {project.title}
+                {selectedProject.title}
               </h2>
             </div>
 
             <div className="border-l border-ink pl-5">
-              <p className="text-lead-sm">{project.summary}</p>
+              <p className="text-lead-sm">{selectedProject.summary}</p>
               <p className="kicker mt-8 text-fg-faint">
-                {project.medium} · {project.images.length} Bilder
+                {selectedProject.medium} · {selectedProject.images.length} Bilder
               </p>
             </div>
           </header>
@@ -247,11 +263,11 @@ export function ArchiveView({ project }: ArchiveViewProps) {
           <div className="page-x sticky top-[var(--site-header-offset)] z-40 flex items-center justify-between gap-4 border-b border-ink bg-paper">
             <p className="kicker min-w-0 truncate text-fg-faint">
               <span className="text-fg">
-                {project.number} {project.title}
+                {selectedProject.number} {selectedProject.title}
               </span>
               <span className="hidden sm:inline">
                 {" "}
-                · {project.images.length} Bilder
+                · {selectedProject.images.length} Bilder
               </span>
             </p>
             <button
@@ -263,7 +279,11 @@ export function ArchiveView({ project }: ArchiveViewProps) {
             </button>
           </div>
 
-          <ProjectGallery key={project.slug} project={project} eagerLead />
+          <ProjectGallery
+            key={selectedProject.slug}
+            project={selectedProject}
+            eagerLead
+          />
         </section>
 
         {/* The register is one scroll away, but the reader who has just finished a
