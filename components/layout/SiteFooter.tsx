@@ -32,7 +32,7 @@ export function SiteFooter() {
             href={channel.href}
             target={channel.external ? "_blank" : undefined}
             rel={channel.external ? "noreferrer" : undefined}
-            className="page-x group grid min-h-16 grid-cols-[1fr_auto] content-between gap-x-4 border-b border-ink py-3 transition-colors duration-200 ease-edge last:border-b-0 hover:bg-ink hover:text-paper [--focus-offset:-4px] sm:min-h-28 sm:gap-x-5 sm:border-b-0 sm:py-6 sm:[&:first-child]:border-r"
+            className="page-x group grid min-h-16 grid-cols-[1fr_auto] content-between gap-x-4 border-b border-ink py-3 transition-colors duration-200 ease-edge last:border-b-0 hover:bg-ink hover:text-paper [--focus-offset:-4px] sm:min-h-[5.25rem] sm:gap-x-5 sm:border-b-0 sm:py-4 sm:[&:first-child]:border-r"
           >
             <span className="kicker text-fg-faint transition-colors group-hover:text-paper/70">
               0{index + 1} — {channel.label}
